@@ -1,27 +1,39 @@
 /* Offline cache for the JUSTLEE HK fair field log.
-   Cache-first: once installed, the tool opens with no signal at all. */
-const CACHE = 'jl-fieldlog-v1';
-const FILES = ['./', './index.html', './icon.png'];
+   Cache-first. Only index.html is required, so a missing or renamed
+   icon can never break offline mode. */
+const CACHE = 'jl-fieldlog-v2';
+const REQUIRED = ['./', './index.html'];
+const OPTIONAL = ['./icon.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await c.addAll(REQUIRED);
+    await Promise.all(OPTIONAL.map(u => c.add(u).catch(() => {})));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+  e.respondWith((async () => {
+    const hit = await caches.match(e.request);
+    if (hit) return hit;
+    try {
+      const res = await fetch(e.request);
+      const c = await caches.open(CACHE);
+      c.put(e.request, res.clone()).catch(() => {});
       return res;
-    }).catch(() => caches.match('./index.html')))
-  );
+    } catch (err) {
+      return (await caches.match('./index.html')) || Response.error();
+    }
+  })());
 });

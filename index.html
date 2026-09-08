@@ -1,0 +1,528 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>JUSTLEE · HK Fair Field Log</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HK Fair">
+<meta name="theme-color" content="#ffffff">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Yantramanav:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{ --ink:#000; --paper:#fff; --line:#d8d6d2; --mute:#6f6c67; --field:#f4f3f1; --alert:#E83820; }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+  body{font-family:"Yantramanav",system-ui,sans-serif;font-size:16px;line-height:1.4;padding-bottom:104px}
+  .wrap{max-width:560px;margin:0 auto;padding:0 14px}
+  header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+  .hbar{display:flex;align-items:baseline;gap:10px;padding:12px 14px 6px;max-width:560px;margin:0 auto}
+  .mark{font-family:"EB Garamond",serif;font-size:19px;letter-spacing:.16em}
+  .hmeta{margin-left:auto;font-size:12px;color:var(--mute)}
+  .count{font-family:"EB Garamond",serif;font-size:19px}
+  #statusbar{font-size:11px;padding:0 14px 7px;max-width:560px;margin:0 auto;color:var(--mute)}
+  nav{display:flex;max-width:560px;margin:0 auto}
+  nav button{flex:1;background:none;border:0;border-bottom:2px solid transparent;font-family:inherit;font-size:14px;color:var(--mute);padding:9px 0 8px;cursor:pointer}
+  nav button.on{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
+  .row{padding:13px 0 12px;border-bottom:1px solid var(--line);position:relative}
+  .lab{font-size:12px;color:var(--mute);letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:baseline;gap:8px;text-transform:uppercase}
+  .lab i{font-style:normal;font-size:11px;color:#a9a5a0;text-transform:none;letter-spacing:0}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-family:inherit;font-size:15px;line-height:1;padding:11px 13px;border:1px solid var(--line);background:var(--paper);border-radius:2px;cursor:pointer;color:var(--ink);min-height:40px}
+  .chip.sel{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .chip.stone.sel{border-color:transparent}
+  .swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:1px}
+  .chip.stone.sel .swatch{background:#fff !important}
+  input[type=text],input[type=tel],textarea{width:100%;font-family:inherit;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:2px;background:var(--field);color:var(--ink)}
+  input:focus,textarea:focus{outline:2px solid var(--ink);outline-offset:-2px}
+  .mt{margin-top:9px}
+  .money{display:flex;align-items:center;gap:9px;margin-top:9px}
+  .money input{font-family:"EB Garamond",serif;font-size:22px;text-align:right}
+  .money span{font-size:12px;color:var(--mute);white-space:nowrap;min-width:74px}
+  .two{display:flex;gap:9px}
+  .note{font-size:12px;color:var(--mute);margin-top:7px}
+  .arrows{position:absolute;right:0;top:9px;display:flex;gap:6px}
+  .arrows button{width:38px;height:34px;border:1px solid var(--line);background:var(--paper);border-radius:2px;font-family:inherit;font-size:15px;color:var(--mute);cursor:pointer;line-height:1}
+  .savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
+  .savebar .inner{max-width:560px;margin:0 auto;display:flex;gap:9px;align-items:center}
+  .save{flex:1;background:var(--ink);color:var(--paper);border:0;border-radius:2px;font-family:inherit;font-size:17px;font-weight:500;padding:15px 0;cursor:pointer;letter-spacing:.04em}
+  .save:disabled{background:#c9c6c2}
+  .undo{background:var(--paper);border:1px solid var(--line);border-radius:2px;font-family:inherit;font-size:14px;color:var(--mute);padding:15px 14px;cursor:pointer}
+  .flash{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:40;background:var(--ink);color:var(--paper);font-size:14px;padding:9px 16px;border-radius:2px;opacity:0;pointer-events:none;transition:opacity .18s}
+  .flash.on{opacity:1}
+  .tallyrow{display:flex;align-items:center;gap:12px;padding:11px 0}
+  .tallyname{flex:1;font-size:16px}
+  .tallynum{font-family:"EB Garamond",serif;font-size:24px;min-width:34px;text-align:right}
+  .plus{width:46px;height:46px;border:1px solid var(--ink);background:var(--paper);border-radius:2px;font-size:22px;font-family:inherit;cursor:pointer}
+  .minus{width:38px;height:46px;border:1px solid var(--line);background:var(--paper);border-radius:2px;font-size:18px;color:var(--mute);font-family:inherit;cursor:pointer}
+  .rec{padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .rec b{font-weight:500}
+  .rec .sub{color:var(--mute);font-size:13px;margin-top:3px}
+  .rec .amt{font-family:"EB Garamond",serif;font-size:18px;float:right}
+  .btn{display:block;width:100%;font-family:inherit;font-size:16px;padding:14px;margin-top:10px;border:1px solid var(--ink);background:var(--paper);border-radius:2px;cursor:pointer}
+  .btn.dark{background:var(--ink);color:var(--paper)}
+  .btn.danger{border-color:#e0ded9;color:#a9a5a0}
+  .hint{font-size:13px;color:var(--mute);line-height:1.6;margin:14px 0 4px}
+  .empty{padding:44px 0;text-align:center;color:var(--mute);font-size:15px;line-height:1.8}
+  h2.sec{font-family:"EB Garamond",serif;font-weight:400;font-size:17px;margin:22px 0 4px}
+  .hide{display:none}
+  .banner{background:var(--field);font-size:13px;padding:10px 12px;margin:12px 0;border-left:2px solid var(--ink)}
+</style>
+
+<header>
+  <div class="hbar">
+    <div class="mark">JUSTLEE</div>
+    <div style="font-size:12px;color:var(--mute)">HK Fair 2026</div>
+    <div class="hmeta"><span class="count" id="cnt">0</span> logged</div>
+  </div>
+  <div id="statusbar">Checking storage…</div>
+  <nav>
+    <button id="tab-log" class="on" onclick="tab('log')">Log</button>
+    <button id="tab-tally" onclick="tab('tally')">Density</button>
+    <button id="tab-data" onclick="tab('data')">Data</button>
+  </nav>
+</header>
+
+<div class="wrap" id="v-log">
+  <div id="reorderbanner" class="banner hide">
+    Reordering. Use the arrows to move fields up or down, then tap Done. Saved records are not affected.
+  </div>
+  <div id="form"></div>
+  <button class="btn danger" id="reorderbtn" onclick="toggleReorder()">Reorder fields</button>
+  <div style="height:8px"></div>
+</div>
+
+<div class="wrap hide" id="v-tally">
+  <div class="hint">Walk a fixed route. Tap +1 each time a booth has this material out on display.</div>
+  <div id="tallylist"></div>
+  <button class="btn danger" onclick="resetTally()">Reset counts</button>
+  <div style="height:20px"></div>
+</div>
+
+<div class="wrap hide" id="v-data">
+  <h2 class="sec">Export</h2>
+  <button class="btn dark" onclick="dl()">Download CSV</button>
+  <button class="btn" onclick="copyCsv()">Copy as table</button>
+  <button class="btn" onclick="showText()">Show as text — long-press to copy, or screenshot</button>
+  <textarea id="rawout" class="hide" readonly style="height:180px;margin-top:10px;font-size:12px;font-family:monospace"></textarea>
+  <div class="hint">Export column order is fixed and does not follow the on-screen order.</div>
+  <h2 class="sec">All records</h2>
+  <div id="reclist"></div>
+  <div style="height:14px"></div>
+  <button class="btn danger" onclick="wipe()">Erase everything</button>
+  <div style="height:24px"></div>
+</div>
+
+<div class="savebar">
+  <div class="inner">
+    <button class="undo" onclick="undo()">Undo last</button>
+    <button class="save" id="savebtn" onclick="save()">Save entry</button>
+  </div>
+</div>
+<div class="flash" id="flash"></div>
+
+<script>
+/* ================= schema ================= */
+const STONES=[
+ {k:'Paraíba',c:'#21B8C5',tier:1,o:['Brazil','Mozambique','Ethiopia','Nigeria']},
+ {k:'Spinel',c:'#F19DB5',tier:1,o:['Mahenge','Cobalt','Jedi','Burma','Vietnam']},
+ {k:'Alexandrite',c:'#7D4698',tier:1,o:['Russia','Brazil','Sri Lanka','Tanzania','India']},
+ {k:'Ruby',c:'#E83820',tier:2,o:['Mogok','Mong Hsu','Mozambique','Tanzania']},
+ {k:'Sapphire',c:'#00239C',tier:2,o:['Kashmir','Burma','Sri Lanka','Madagascar']},
+ {k:'Emerald',c:'#2D5B65',tier:2,o:['Muzo','Colombia other','Zambia','Brazil']},
+ {k:'Sphene',c:'#F5A21B',tier:3,o:['Madagascar','Pakistan']},
+ {k:'Demantoid',c:'#7FA53F',tier:3,o:['Russia','Madagascar','Namibia']},
+ {k:"Cat's Eye",c:'#8C6D3F',tier:3,o:['Sri Lanka','Brazil']},
+ {k:'Tsavorite',c:'#2D5B65',tier:4,o:['Kenya','Tanzania','Madagascar']},
+ {k:'Padparadscha',c:'#F19DB5',tier:4,o:['Sri Lanka','Madagascar']},
+ {k:'Star stone',c:'#6f6c67',tier:4,o:['Burma','Sri Lanka','Mozambique']},
+ {k:'Bi-color Tourmaline',c:'#7FA53F',tier:4,o:['Brazil','Nigeria','Mozambique']},
+ {k:'Jadeite',c:'#2D5B65',tier:4,o:['Burma']},
+ {k:'Other',c:'#000000',tier:4,o:[]}
+];
+const TIERNAME={1:'Priority 1',2:'Priority 2',3:'Priority 3',4:'Off-list'};
+const WEIGHT=['<1','1–2','2–3','3–5','5–10','10+'];
+const FORM=['Loose','Ring','Pendant','Ring / pendant','Earrings','Necklace','Bracelet','Pair','Suite'];
+const TREAT=['Untreated','No Heat','Heated','No Oil (None)','Minor Oil','Unstated','Other'];
+const APPEAR=['Vivid','Pale','Clean','Inclusions','Good cut','Average cut',
+              'Strong fluorescence','Clear colour change','Sharp star','Strong chatoyancy'];
+const CERT=['GRS','Gübelin','SSEF','GIA','AIGS','Lotus','None','Unstated'];
+const PBASIS=['Asking','Negotiable','Firm','Memo'];
+const GRADE=['Commercial','Fine','Collector'];
+const TREND=['Up','Flat','Down','No answer'];
+const BUYER=['Middle East','China','SE Asia','Europe / US','TW / HK','No answer'];
+const UNSTATED='Unstated', OTHER='Other';
+
+const FIELDS={
+ booth: {label:'Booth & vendor', hint:'optional — stays for the next entry'},
+ stone: {label:'Material'},
+ origin:{label:'Origin', hint:'tap one, or leave blank and use the note line'},
+ weight:{label:'Weight range', hint:'ct'},
+ ct:    {label:'Exact carat', hint:'if known, e.g. 3.62'},
+ form:  {label:'Loose or mounted'},
+ treat: {label:'Treatment'},
+ appear:{label:'Appearance', hint:'multi-select'},
+ price: {label:'Price'},
+ cert:  {label:'Certificate', hint:'multi-select'},
+ grade: {label:'Grade'},
+ trend: {label:'6-month trend', hint:"vendor's own answer"},
+ buyer: {label:'Buyer origin', hint:'as stated by vendor'},
+ flags: {label:'Video & card'},
+ note:  {label:'Note'}
+};
+const DEFAULT_ORDER=['booth','stone','origin','weight','ct','form','treat','appear',
+                     'price','cert','grade','trend','buyer','flags','note'];
+
+/* Fixed export schema — never reorders. */
+const HEAD=['Time','Booth','Vendor','Material','Origin','Origin note','Weight range','Carat',
+            'Form','Treatment','Treatment note','Appearance','Appearance note',
+            'USD/ct','Total USD','Price basis','Price note','Certificate','Grade',
+            '6-mo trend','Buyer origin','Video','Card','Note'];
+
+const KEY='justlee-hk-2026', BAK=KEY+'-bak', DRAFT=KEY+'-draft';
+let db={records:[],tally:{},tnote:{},order:DEFAULT_ORDER.slice()};
+const BLANK={stone:null,origin:null,originNote:'',weight:null,ct:'',form:null,
+  treat:null,treatNote:'',appear:[],appearNote:'',price:'',total:'',pbasis:null,pnote:'',
+  cert:[],grade:null,trend:null,buyer:[],booth:'',vendor:'',video:false,card:false,note:''};
+let f=Object.assign({},BLANK);
+let reorder=false;
+
+/* ================= storage ================= */
+const inApp=(typeof window.storage!=='undefined' && window.storage);
+const store=inApp?{
+  async get(k){const r=await window.storage.get(k);return r&&r.value;},
+  async set(k,v){await window.storage.set(k,v);}
+}:{
+  async get(k){return localStorage.getItem(k);},
+  async set(k,v){localStorage.setItem(k,v);}
+};
+function setStatus(ok,msg){
+  const el2=document.getElementById('statusbar');
+  el2.style.color=ok?'var(--mute)':'var(--alert)'; el2.textContent=msg;
+}
+function stamp(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+
+async function load(){
+  let raw=null,src='';
+  try{raw=await store.get(KEY); if(raw)src='main file';}catch(e){}
+  if(!raw){try{raw=await store.get(BAK); if(raw)src='backup file';}catch(e){}}
+  if(raw){try{db=Object.assign(db,JSON.parse(raw));}catch(e){}}
+  if(!Array.isArray(db.order)||!db.order.length) db.order=DEFAULT_ORDER.slice();
+  DEFAULT_ORDER.forEach(id=>{if(!db.order.includes(id))db.order.push(id);});
+  db.order=db.order.filter(id=>FIELDS[id]);
+  STONES.forEach(s=>{if(db.tally[s.k]==null)db.tally[s.k]=0;});
+  await selftest(src);
+  render();
+  await restoreDraft();
+}
+async function selftest(src){
+  try{
+    const probe='t'+Date.now();
+    await store.set(KEY+'-probe',probe);
+    if(await store.get(KEY+'-probe')!==probe) throw 0;
+    setStatus(true,'Storage OK'+(inApp?' (app)':' (on device, works offline)')+
+      (src?' · loaded '+db.records.length+' from '+src:''));
+  }catch(e){
+    setStatus(false,'⚠ Storage unavailable. Use pen and paper, or tap "Show as text" on the Data tab after every entry and screenshot it.');
+  }
+}
+let saving=false,dirty=false;
+async function persist(){
+  if(saving){dirty=true;return;}
+  saving=true;
+  const payload=JSON.stringify(db);
+  try{
+    await store.set(KEY,payload); await store.set(BAK,payload);
+    const back=await store.get(KEY);
+    if(!back||JSON.parse(back).records.length!==db.records.length) throw 0;
+    setStatus(true,db.records.length+' saved · '+stamp()+
+      (db.records.length&&db.records.length%10===0?' · time to export a backup':''));
+  }catch(e){
+    setStatus(false,'⚠ Entry '+db.records.length+' failed to save. Go to Data, tap "Show as text" and screenshot it. Do not close this page.');
+  }
+  saving=false;
+  if(dirty){dirty=false;persist();}
+}
+function saveDraft(){ store.set(DRAFT,JSON.stringify(f)).catch(()=>{}); }
+async function restoreDraft(){
+  try{
+    const v=await store.get(DRAFT); if(!v)return;
+    const d=JSON.parse(v); if(!d||typeof d!=='object')return;
+    f=Object.assign(f,d); render();
+  }catch(e){}
+}
+
+/* ================= builders ================= */
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function chips(items,key,multi){
+  const box=el('div','chips');
+  items.forEach(it=>{
+    const b=el('button','chip',it);
+    const on=multi?f[key].includes(it):f[key]===it;
+    if(on)b.classList.add('sel');
+    b.onclick=()=>{
+      if(multi){const i=f[key].indexOf(it); i<0?f[key].push(it):f[key].splice(i,1);}
+      else f[key]=(f[key]===it)?null:it;
+      render(); saveDraft();
+    };
+    box.appendChild(b);
+  });
+  return box;
+}
+function textInput(key,ph,cls){
+  const i=el('input',cls||'');
+  i.type='text'; i.placeholder=ph; i.value=f[key]||''; i.autocomplete='off';
+  i.oninput=()=>{f[key]=i.value;saveDraft();};
+  return i;
+}
+function numInput(key,ph){
+  const i=el('input');
+  i.type='tel'; i.inputMode='decimal'; i.placeholder=ph;
+  i.value=f[key]||''; i.autocomplete='off';
+  i.oninput=()=>{f[key]=i.value;saveDraft();};
+  return i;
+}
+
+function buildRow(id){
+  const spec=FIELDS[id];
+  const row=el('div','row');
+  const lab=el('div','lab');
+  lab.appendChild(el('span',null,spec.label));
+  if(id==='stone'){
+    const s=STONES.find(x=>x.k===f.stone);
+    lab.appendChild(el('i',null,s?TIERNAME[s.tier]:''));
+  } else if(spec.hint) lab.appendChild(el('i',null,spec.hint));
+  row.appendChild(lab);
+
+  if(id==='booth'){
+    const two=el('div','two');
+    const b=textInput('booth','Booth no.'); b.style.flex='0 0 40%';
+    two.appendChild(b); two.appendChild(textInput('vendor','Vendor name'));
+    row.appendChild(two);
+  }
+  else if(id==='stone'){
+    const box=el('div','chips');
+    STONES.forEach(s=>{
+      const b=el('button','chip stone','<span class="swatch" style="background:'+s.c+'"></span>'+s.k);
+      if(f.stone===s.k){b.classList.add('sel');b.style.background=s.c;}
+      b.onclick=()=>{
+        if(f.stone!==s.k){f.stone=s.k;f.origin=null;}
+        else f.stone=null;
+        render();saveDraft();
+      };
+      box.appendChild(b);
+    });
+    row.appendChild(box);
+    if(f.stone==='Other') row.appendChild(textInput('note','Material name','mt'));
+  }
+  else if(id==='origin'){
+    const s=STONES.find(x=>x.k===f.stone);
+    const opts=(s?s.o:[]).concat([UNSTATED]);
+    if(!s) row.appendChild(el('div','note','Pick a material first, or just use the note line.'));
+    row.appendChild(chips(opts,'origin',false));
+    row.appendChild(textInput('originNote','Origin note — anything the vendor said','mt'));
+  }
+  else if(id==='weight') row.appendChild(chips(WEIGHT,'weight',false));
+  else if(id==='ct') row.appendChild(numInput('ct','e.g. 3.62'));
+  else if(id==='form') row.appendChild(chips(FORM,'form',false));
+  else if(id==='treat'){
+    row.appendChild(chips(TREAT,'treat',false));
+    if(f.treat===OTHER||f.treat===UNSTATED)
+      row.appendChild(textInput('treatNote','Treatment wording as stated','mt'));
+  }
+  else if(id==='appear'){
+    row.appendChild(chips(APPEAR,'appear',true));
+    row.appendChild(textInput('appearNote','One line on how it looks','mt'));
+  }
+  else if(id==='price'){
+    const a=el('div','money');
+    a.appendChild(numInput('price','0')); a.appendChild(el('span',null,'USD / ct'));
+    row.appendChild(a);
+    const b=el('div','money');
+    b.appendChild(numInput('total','0')); b.appendChild(el('span',null,'USD total'));
+    row.appendChild(b);
+    const pb=chips(PBASIS,'pbasis',false); pb.classList.add('mt'); row.appendChild(pb);
+    row.appendChild(textInput('pnote','Price conditions — quantity, suite, extras…','mt'));
+  }
+  else if(id==='cert') row.appendChild(chips(CERT,'cert',true));
+  else if(id==='grade') row.appendChild(chips(GRADE,'grade',false));
+  else if(id==='trend') row.appendChild(chips(TREND,'trend',false));
+  else if(id==='buyer') row.appendChild(chips(BUYER,'buyer',true));
+  else if(id==='flags'){
+    const box=el('div','chips');
+    const v=el('button','chip'+(f.video?' sel':''),'Video taken');
+    v.onclick=()=>{f.video=!f.video;render();saveDraft();};
+    const c=el('button','chip'+(f.card?' sel':''),'Card collected');
+    c.onclick=()=>{f.card=!f.card;render();saveDraft();};
+    box.appendChild(v); box.appendChild(c); row.appendChild(box);
+    row.appendChild(el('div','note','Shoot the booth sign or card first, then the stones.'));
+  }
+  else if(id==='note') row.appendChild(textInput('note','One line is enough'));
+
+  if(reorder){
+    const a=el('div','arrows');
+    const up=el('button',null,'↑'), dn=el('button',null,'↓');
+    up.onclick=()=>move(id,-1); dn.onclick=()=>move(id,1);
+    a.appendChild(up); a.appendChild(dn); row.appendChild(a);
+  }
+  return row;
+}
+function move(id,d){
+  const i=db.order.indexOf(id), j=i+d;
+  if(i<0||j<0||j>=db.order.length) return;
+  db.order.splice(j,0,db.order.splice(i,1)[0]);
+  persist(); render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleReorder(){
+  reorder=!reorder;
+  document.getElementById('reorderbanner').classList.toggle('hide',!reorder);
+  document.getElementById('reorderbtn').textContent=reorder?'Done — back to logging':'Reorder fields';
+  render();
+}
+function render(){
+  const box=document.getElementById('form'); box.innerHTML='';
+  db.order.forEach(id=>box.appendChild(buildRow(id)));
+  document.getElementById('cnt').textContent=db.records.length;
+  document.getElementById('savebtn').disabled=!f.stone&&!f.price&&!f.total;
+  drawTally(); drawRecords();
+}
+
+/* ================= save ================= */
+function flash(msg){
+  const e=document.getElementById('flash'); e.textContent=msg; e.classList.add('on');
+  clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove('on'),1300);
+}
+function save(){
+  if(!f.stone&&!f.price&&!f.total){flash('Needs a material or a price');return;}
+  db.records.push({
+    t:new Date().toISOString(), booth:f.booth.trim(), vendor:f.vendor.trim(),
+    stone:(f.stone==='Other'?(f.note.trim()||'Other'):(f.stone||'')), ckey:f.stone,
+    origin:f.origin||'', originNote:f.originNote.trim(),
+    weight:f.weight||'', ct:f.ct.trim(), form:f.form||'',
+    treat:f.treat||'', treatNote:f.treatNote.trim(),
+    appear:f.appear.join(' / '), appearNote:f.appearNote.trim(),
+    price:f.price.trim(), total:f.total.trim(), pbasis:f.pbasis||'', pnote:f.pnote.trim(),
+    cert:f.cert.join(' / '), grade:f.grade||'', trend:f.trend||'',
+    buyer:f.buyer.join(' / '), video:f.video?'Y':'', card:f.card?'Y':'', note:f.note.trim()
+  });
+  persist();
+  const keep={booth:f.booth,vendor:f.vendor,stone:f.stone};
+  f=Object.assign({},BLANK,keep);
+  store.set(DRAFT,'').catch(()=>{});
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+  flash('Saved — entry '+db.records.length);
+}
+function undo(){
+  if(!db.records.length){flash('Nothing to undo');return;}
+  const r=db.records.pop(); persist(); render();
+  flash('Removed '+(r.stone||'entry')+(r.price?' '+r.price:''));
+}
+
+/* ================= tally ================= */
+function drawTally(){
+  const box=document.getElementById('tallylist'); box.innerHTML='';
+  STONES.forEach(s=>{
+    const d=el('div','tallyrow','<span class="swatch" style="background:'+s.c+'"></span>'+
+      '<span class="tallyname">'+s.k+'</span><span class="tallynum">'+(db.tally[s.k]||0)+'</span>');
+    const m=el('button','minus','−');
+    m.onclick=()=>{db.tally[s.k]=Math.max(0,(db.tally[s.k]||0)-1);persist();drawTally();};
+    const p=el('button','plus','+');
+    p.onclick=()=>{db.tally[s.k]=(db.tally[s.k]||0)+1;persist();drawTally();};
+    d.appendChild(m); d.appendChild(p); box.appendChild(d);
+    const n=el('input'); n.type='text'; n.placeholder='Observation';
+    n.value=(db.tnote&&db.tnote[s.k])||'';
+    n.style.cssText='margin:-4px 0 12px;font-size:14px;padding:8px 10px';
+    n.oninput=()=>{db.tnote=db.tnote||{};db.tnote[s.k]=n.value;persist();};
+    box.appendChild(n);
+  });
+}
+function resetTally(){
+  if(!confirm('Reset all density counts to zero?')) return;
+  STONES.forEach(s=>db.tally[s.k]=0); db.tnote={}; persist(); drawTally();
+}
+
+/* ================= data ================= */
+function drawRecords(){
+  const box=document.getElementById('reclist');
+  if(!db.records.length){box.innerHTML='<div class="empty">No records yet.<br>Go back to Log to start.</div>';return;}
+  box.innerHTML='';
+  [...db.records].reverse().forEach(r=>{
+    const s=STONES.find(x=>x.k===(r.ckey||r.stone));
+    const d=el('div','rec');
+    const amt=r.price?'$'+r.price+'/ct':(r.total?'$'+r.total:'');
+    d.innerHTML=(amt?'<span class="amt">'+amt+'</span>':'')+
+      '<b><span class="swatch" style="background:'+(s?s.c:'#999')+'"></span>'+(r.stone||'—')+
+      (r.origin?' · '+r.origin:'')+'</b>'+
+      '<div class="sub">'+[r.ct?r.ct+'ct':(r.weight?r.weight+'ct':''),r.form,r.treat,r.treatNote,
+        r.grade,r.pbasis,r.cert,r.trend?'trend '+r.trend:'',r.appear,r.appearNote,r.pnote,
+        r.total&&r.price?'total $'+r.total:''].filter(Boolean).join(' · ')+'</div>'+
+      '<div class="sub">'+[r.t.slice(5,16).replace('T',' '),r.booth,r.vendor,
+        r.buyer?'buyers '+r.buyer:'',r.video?'video':'',r.card?'card':'',
+        r.originNote,r.note].filter(Boolean).join(' · ')+'</div>';
+    box.appendChild(d);
+  });
+}
+function csv(){
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const L=[HEAD.map(q).join(',')];
+  db.records.forEach(r=>L.push([r.t.slice(0,16).replace('T',' '),r.booth,r.vendor,r.stone,
+    r.origin,r.originNote,r.weight,r.ct,r.form,r.treat,r.treatNote,r.appear,r.appearNote,
+    r.price,r.total,r.pbasis,r.pnote,r.cert,r.grade,r.trend,r.buyer,r.video,r.card,r.note
+    ].map(q).join(',')));
+  L.push('');
+  L.push([q('Density'),q('Count'),q('Observation')].join(','));
+  STONES.forEach(s=>L.push([q(s.k),q(db.tally[s.k]||0),q((db.tnote&&db.tnote[s.k])||'')].join(',')));
+  return L.join('\n');
+}
+function tsv(){
+  return csv().split('\n').map(l=>{
+    const out=[];let cur='',qq=false;
+    for(let i=0;i<l.length;i++){
+      const c=l[i];
+      if(c==='"'){if(qq&&l[i+1]==='"'){cur+='"';i++;}else qq=!qq;}
+      else if(c===','&&!qq){out.push(cur);cur='';}
+      else cur+=c;
+    }
+    out.push(cur);return out.join('\t');
+  }).join('\n');
+}
+function showText(){
+  const t=document.getElementById('rawout');
+  t.value=tsv(); t.classList.remove('hide'); t.focus(); t.select();
+  t.scrollIntoView({behavior:'smooth',block:'center'});
+  flash('Long-press to copy, or screenshot');
+}
+function dl(){
+  const b=new Blob(['\uFEFF'+csv()],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download='JUSTLEE_HK2026_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(a.href); flash('Downloaded');
+}
+async function copyCsv(){
+  try{await navigator.clipboard.writeText(tsv());flash('Copied');}
+  catch(e){showText();}
+}
+function wipe(){
+  if(!confirm('Erase all entries and density counts? This cannot be undone.')) return;
+  db.records=[]; db.tnote={}; STONES.forEach(s=>db.tally[s.k]=0);
+  persist(); render(); flash('Erased');
+}
+function tab(n){
+  ['log','tally','data'].forEach(x=>{
+    document.getElementById('v-'+x).classList.toggle('hide',x!==n);
+    document.getElementById('tab-'+x).classList.toggle('on',x===n);
+  });
+  document.querySelector('.savebar').classList.toggle('hide',n!=='log');
+  window.scrollTo(0,0);
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+load();
+</script>
