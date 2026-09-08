@@ -8,16 +8,16 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Yantramanav:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Yantramanav:wght@300;400;500;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-  :root{ --ink:#000; --paper:#fff; --line:#d8d6d2; --mute:#6f6c67; --field:#f4f3f1; --alert:#E83820; }
+  :root{ --ink:#000; --paper:#fff; --line:#d8d6d2; --mute:#6f6c67; --field:#f4f3f1;
+         --alert:#E83820; --aux:#21B8C5; --auxbg:#f0fbfc; }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
-  body{font-family:"Yantramanav",system-ui,sans-serif;font-size:16px;line-height:1.4;padding-bottom:104px}
+  body{font-family:"Yantramanav","Noto Sans TC",system-ui,sans-serif;font-size:16px;line-height:1.4;padding-bottom:104px}
   .wrap{max-width:560px;margin:0 auto;padding:0 14px}
   header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
   .hbar{display:flex;align-items:baseline;gap:10px;padding:12px 14px 6px;max-width:560px;margin:0 auto}
@@ -29,16 +29,22 @@
   nav button{flex:1;background:none;border:0;border-bottom:2px solid transparent;font-family:inherit;font-size:14px;color:var(--mute);padding:9px 0 8px;cursor:pointer}
   nav button.on{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
   .row{padding:13px 0 12px;border-bottom:1px solid var(--line);position:relative}
+  .row.aux{background:var(--auxbg);border-bottom-color:#cfeef2;padding-left:12px;padding-right:12px;
+           margin:0 -12px;border-left:2px solid var(--aux)}
   .lab{font-size:12px;color:var(--mute);letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:baseline;gap:8px;text-transform:uppercase}
   .lab i{font-style:normal;font-size:11px;color:#a9a5a0;text-transform:none;letter-spacing:0}
+  .row.aux .lab{color:#1a8b96}
   .chips{display:flex;flex-wrap:wrap;gap:7px}
   .chip{font-family:inherit;font-size:15px;line-height:1;padding:11px 13px;border:1px solid var(--line);background:var(--paper);border-radius:2px;cursor:pointer;color:var(--ink);min-height:40px}
   .chip.sel{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .row.aux .chip.sel{background:var(--aux);border-color:var(--aux)}
   .chip.stone.sel{border-color:transparent}
   .swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:1px}
   .chip.stone.sel .swatch{background:#fff !important}
-  input[type=text],input[type=tel],textarea{width:100%;font-family:inherit;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:2px;background:var(--field);color:var(--ink)}
-  input:focus,textarea:focus{outline:2px solid var(--ink);outline-offset:-2px}
+  input[type=text],input[type=tel]{width:100%;font-family:inherit;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:2px;background:var(--field);color:var(--ink)}
+  .row.aux input{background:#fff;border-color:#cfeef2}
+  input:focus{outline:2px solid var(--ink);outline-offset:-2px}
+  textarea{width:100%;font-family:inherit;font-size:12px;padding:10px;border:1px solid var(--line);border-radius:2px;background:var(--field)}
   .mt{margin-top:9px}
   .money{display:flex;align-items:center;gap:9px;margin-top:9px}
   .money input{font-family:"EB Garamond",serif;font-size:22px;text-align:right}
@@ -48,17 +54,18 @@
   .arrows{position:absolute;right:0;top:9px;display:flex;gap:6px}
   .arrows button{width:38px;height:34px;border:1px solid var(--line);background:var(--paper);border-radius:2px;font-family:inherit;font-size:15px;color:var(--mute);cursor:pointer;line-height:1}
   .savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
-  .savebar .inner{max-width:560px;margin:0 auto;display:flex;gap:9px;align-items:center}
+  .savebar .inner{max-width:560px;margin:0 auto;display:flex;gap:9px}
   .save{flex:1;background:var(--ink);color:var(--paper);border:0;border-radius:2px;font-family:inherit;font-size:17px;font-weight:500;padding:15px 0;cursor:pointer;letter-spacing:.04em}
   .save:disabled{background:#c9c6c2}
   .undo{background:var(--paper);border:1px solid var(--line);border-radius:2px;font-family:inherit;font-size:14px;color:var(--mute);padding:15px 14px;cursor:pointer}
   .flash{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:40;background:var(--ink);color:var(--paper);font-size:14px;padding:9px 16px;border-radius:2px;opacity:0;pointer-events:none;transition:opacity .18s}
   .flash.on{opacity:1}
-  .tallyrow{display:flex;align-items:center;gap:12px;padding:11px 0}
-  .tallyname{flex:1;font-size:16px}
-  .tallynum{font-family:"EB Garamond",serif;font-size:24px;min-width:34px;text-align:right}
-  .plus{width:46px;height:46px;border:1px solid var(--ink);background:var(--paper);border-radius:2px;font-size:22px;font-family:inherit;cursor:pointer}
-  .minus{width:38px;height:46px;border:1px solid var(--line);background:var(--paper);border-radius:2px;font-size:18px;color:var(--mute);font-family:inherit;cursor:pointer}
+  .sумrow{}
+  .sumrow{padding:12px 0;border-bottom:1px solid var(--line)}
+  .sumtop{display:flex;align-items:baseline;gap:9px}
+  .sumname{flex:1;font-size:16px}
+  .sumn{font-family:"EB Garamond",serif;font-size:22px}
+  .sumsub{font-size:13px;color:var(--mute);margin-top:3px}
   .rec{padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
   .rec b{font-weight:500}
   .rec .sub{color:var(--mute);font-size:13px;margin-top:3px}
@@ -82,7 +89,7 @@
   <div id="statusbar">Checking storage…</div>
   <nav>
     <button id="tab-log" class="on" onclick="tab('log')">Log</button>
-    <button id="tab-tally" onclick="tab('tally')">Density</button>
+    <button id="tab-sum" onclick="tab('sum')">Summary</button>
     <button id="tab-data" onclick="tab('data')">Data</button>
   </nav>
 </header>
@@ -96,10 +103,9 @@
   <div style="height:8px"></div>
 </div>
 
-<div class="wrap hide" id="v-tally">
-  <div class="hint">Walk a fixed route. Tap +1 each time a booth has this material out on display.</div>
-  <div id="tallylist"></div>
-  <button class="btn danger" onclick="resetTally()">Reset counts</button>
+<div class="wrap hide" id="v-sum">
+  <div class="hint">Counted automatically from your entries. Booths = distinct booth numbers you logged, so this reflects what you actually asked about, not everything on the floor.</div>
+  <div id="sumlist"></div>
   <div style="height:20px"></div>
 </div>
 
@@ -108,7 +114,7 @@
   <button class="btn dark" onclick="dl()">Download CSV</button>
   <button class="btn" onclick="copyCsv()">Copy as table</button>
   <button class="btn" onclick="showText()">Show as text — long-press to copy, or screenshot</button>
-  <textarea id="rawout" class="hide" readonly style="height:180px;margin-top:10px;font-size:12px;font-family:monospace"></textarea>
+  <textarea id="rawout" class="hide" readonly style="height:180px;margin-top:10px;font-family:monospace"></textarea>
   <div class="hint">Export column order is fixed and does not follow the on-screen order.</div>
   <h2 class="sec">All records</h2>
   <div id="reclist"></div>
@@ -126,72 +132,94 @@
 <div class="flash" id="flash"></div>
 
 <script>
-/* ================= schema ================= */
+/* ============ schema ============ */
+/* Material order follows the JUSTLEE website. Origins are country-level, a–z. */
 const STONES=[
- {k:'Paraíba',c:'#21B8C5',tier:1,o:['Brazil','Mozambique','Ethiopia','Nigeria']},
- {k:'Spinel',c:'#F19DB5',tier:1,o:['Mahenge','Cobalt','Jedi','Burma','Vietnam']},
- {k:'Alexandrite',c:'#7D4698',tier:1,o:['Russia','Brazil','Sri Lanka','Tanzania','India']},
- {k:'Ruby',c:'#E83820',tier:2,o:['Mogok','Mong Hsu','Mozambique','Tanzania']},
- {k:'Sapphire',c:'#00239C',tier:2,o:['Kashmir','Burma','Sri Lanka','Madagascar']},
- {k:'Emerald',c:'#2D5B65',tier:2,o:['Muzo','Colombia other','Zambia','Brazil']},
- {k:'Sphene',c:'#F5A21B',tier:3,o:['Madagascar','Pakistan']},
- {k:'Demantoid',c:'#7FA53F',tier:3,o:['Russia','Madagascar','Namibia']},
- {k:"Cat's Eye",c:'#8C6D3F',tier:3,o:['Sri Lanka','Brazil']},
- {k:'Tsavorite',c:'#2D5B65',tier:4,o:['Kenya','Tanzania','Madagascar']},
- {k:'Padparadscha',c:'#F19DB5',tier:4,o:['Sri Lanka','Madagascar']},
- {k:'Star stone',c:'#6f6c67',tier:4,o:['Burma','Sri Lanka','Mozambique']},
- {k:'Bi-color Tourmaline',c:'#7FA53F',tier:4,o:['Brazil','Nigeria','Mozambique']},
- {k:'Jadeite',c:'#2D5B65',tier:4,o:['Burma']},
- {k:'Other',c:'#000000',tier:4,o:[]}
+ {k:'紅寶石',       c:'#E83820', o:['Burma','Madagascar','Mozambique','Tanzania','Thailand','Vietnam'],
+  col:['Pigeon Blood','Vivid Red','Red','Pinkish Red','Purplish Red']},
+ {k:'藍寶石',       c:'#00239C', o:['Burma','Kashmir','Madagascar','Sri Lanka','Thailand'],
+  col:['Royal Blue','Cornflower','Vivid Blue','Blue','Greenish Blue','Pinkish']},
+ {k:'祖母綠',       c:'#2D5B65', o:['Afghanistan','Brazil','Colombia','Ethiopia','Zambia'],
+  col:['Muzo Green','Vivid Green','Green','Bluish Green','Yellowish Green']},
+ {k:'翡翠',         c:'#1E7A5A', o:['Burma'],
+  col:['帝王綠','陽綠','藍水','紫羅蘭','冰種','白底青']},
+ {k:'彩鑽',         c:'#C9A227', o:['Australia','Botswana','Russia','South Africa'],
+  col:[], type:['Pink','Blue','Green','Yellow','未確認']},
+ {k:'Alexandrite',  c:'#7D4698', o:['Brazil','India','Madagascar','Russia','Sri Lanka','Tanzania'],
+  col:['綠變紅','藍綠變紫紅','變色微弱']},
+ {k:'Spinel',       c:'#F19DB5', o:['Burma','Madagascar','Sri Lanka','Tanzania','Vietnam'],
+  col:['Vivid Red','Hot Pink','Neon Pink','Cobalt Blue','Grey Blue','Lavender'],
+  type:['鈷尖晶','馬亨蓋尖晶','絕地武士','未確認']},
+ {k:'Paraiba',      c:'#21B8C5', o:['Brazil','Ethiopia','Mozambique','Nigeria'],
+  col:['Neon Blue','Neon Blue-Green','Blue-Green','Green-Blue','Greenish']},
+ {k:'Tourmaline',   c:'#7FA53F', o:['Afghanistan','Brazil','Madagascar','Mozambique','Nigeria'],
+  col:['Pink','Green','Blue','Yellow','雙色']},
+ {k:'Padparadscha', c:'#F58A5B', o:['Madagascar','Sri Lanka','Tanzania'],
+  col:['Pinkish Orange','Orangy Pink'], type:['粉橙','橙粉','蓮花色','未確認']},
+ {k:'Sphene',       c:'#F5A21B', o:['Brazil','Madagascar','Pakistan','Sri Lanka'],
+  col:['Yellow Green','Golden','Orange']},
+ {k:'Tsavorite',    c:'#3F8F4F', o:['Kenya','Madagascar','Tanzania'],
+  col:['Vivid Green','Green','Bluish Green']},
+ {k:'翠榴石',       c:'#6B8E23', o:['Italy','Madagascar','Namibia','Russia'],
+  col:['Vivid Green','Green','Yellowish Green']},
+ {k:'Other',        c:'#000000', o:[], col:[]}
 ];
-const TIERNAME={1:'Priority 1',2:'Priority 2',3:'Priority 3',4:'Off-list'};
-const WEIGHT=['<1','1–2','2–3','3–5','5–10','10+'];
+const UNSTATED='未說明';
+const WEIGHT=['1ct 以下','1–5ct','5–9.99ct','10ct 以上'];
 const FORM=['Loose','Ring','Pendant','Ring / pendant','Earrings','Necklace','Bracelet','Pair','Suite'];
-const TREAT=['Untreated','No Heat','Heated','No Oil (None)','Minor Oil','Unstated','Other'];
-const APPEAR=['Vivid','Pale','Clean','Inclusions','Good cut','Average cut',
-              'Strong fluorescence','Clear colour change','Sharp star','Strong chatoyancy'];
-const CERT=['GRS','Gübelin','SSEF','GIA','AIGS','Lotus','None','Unstated'];
+const TREAT=['No Heat','Untreated','Heated','No Oil (None)','Insignificant','Minor','Moderate','未說明'];
+const CLARITY=['IF','VVS1','VVS2','VS1','VS2','SI1','SI2'];
+const APPEAR=['顏色濃','顏色淡','淨度乾淨','有內含物','切工佳','切工一般','火彩強',
+              '螢光強','變色明顯','貓眼效應','星光效應','馬尾狀內含物'];
+const CERT=['GRS','Gübelin','SSEF','GIA','AIGS','Lotus','無證書','未說明'];
 const PBASIS=['Asking','Negotiable','Firm','Memo'];
-const GRADE=['Commercial','Fine','Collector'];
 const TREND=['Up','Flat','Down','No answer'];
-const BUYER=['Middle East','China','SE Asia','Europe / US','TW / HK','No answer'];
-const UNSTATED='Unstated', OTHER='Other';
+const BUYER=['Middle East','China','SE Asia','Europe / US','TW / HK','Japan / Korea','India','No answer'];
 
 const FIELDS={
- booth: {label:'Booth & vendor', hint:'optional — stays for the next entry'},
- stone: {label:'Material'},
- origin:{label:'Origin', hint:'tap one, or leave blank and use the note line'},
- weight:{label:'Weight range', hint:'ct'},
- ct:    {label:'Exact carat', hint:'if known, e.g. 3.62'},
- form:  {label:'Loose or mounted'},
- treat: {label:'Treatment'},
- appear:{label:'Appearance', hint:'multi-select'},
- price: {label:'Price'},
- cert:  {label:'Certificate', hint:'multi-select'},
- grade: {label:'Grade'},
- trend: {label:'6-month trend', hint:"vendor's own answer"},
- buyer: {label:'Buyer origin', hint:'as stated by vendor'},
- flags: {label:'Video & card'},
- note:  {label:'Note'}
+ booth:  {label:'Booth & vendor', hint:'optional — stays for the next entry'},
+ stone:  {label:'Material'},
+ type:   {label:'Type', hint:'per certificate', cond:s=>s&&s.type},
+ color:  {label:'Colour', cond:s=>s&&s.col&&s.col.length},
+ clarity:{label:'Clarity', hint:'diamond scale', cond:s=>s&&s.k==='彩鑽'},
+ origin: {label:'Origin'},
+ weight: {label:'Weight range'},
+ ct:     {label:'Exact carat', hint:'e.g. 3.62'},
+ form:   {label:'Loose or mounted'},
+ treat:  {label:'Treatment'},
+ appear: {label:'Appearance', hint:'multi-select'},
+ price:  {label:'Price'},
+ cert:   {label:'Certificate', hint:'multi-select'},
+ trend:  {label:'6-month trend', hint:'as stated by vendor'},
+ buyer:  {label:'Buyer — supplementary', aux:true},
+ bnote:  {label:'Booth notes — supplementary', aux:true},
+ note:   {label:'Note'}
 };
-const DEFAULT_ORDER=['booth','stone','origin','weight','ct','form','treat','appear',
-                     'price','cert','grade','trend','buyer','flags','note'];
+const DEFAULT_ORDER=['booth','stone','type','color','clarity','origin','weight','ct','form',
+                     'treat','appear','price','cert','trend','buyer','bnote','note'];
 
 /* Fixed export schema — never reorders. */
-const HEAD=['Time','Booth','Vendor','Material','Origin','Origin note','Weight range','Carat',
-            'Form','Treatment','Treatment note','Appearance','Appearance note',
-            'USD/ct','Total USD','Price basis','Price note','Certificate','Grade',
-            '6-mo trend','Buyer origin','Video','Card','Note'];
+const HEAD=['Time','Booth','Vendor','Material','Type','Colour','Colour note','Clarity',
+            'Clarity note','Origin','Origin note','Weight range','Carat','Form','Treatment',
+            'Appearance','Appearance note','USD/ct','Total USD','Price basis','Price note',
+            'Certificate','Cert note','6-mo trend','Buyer country','Buyer note','Booth note',
+            'Video','Card','Note'];
 
 const KEY='justlee-hk-2026', BAK=KEY+'-bak', DRAFT=KEY+'-draft';
-let db={records:[],tally:{},tnote:{},order:DEFAULT_ORDER.slice()};
-const BLANK={stone:null,origin:null,originNote:'',weight:null,ct:'',form:null,
-  treat:null,treatNote:'',appear:[],appearNote:'',price:'',total:'',pbasis:null,pnote:'',
-  cert:[],grade:null,trend:null,buyer:[],booth:'',vendor:'',video:false,card:false,note:''};
-let f=Object.assign({},BLANK);
+let db={records:[],snote:{},order:DEFAULT_ORDER.slice()};
+
+/* every field listed here; arrays are rebuilt fresh on each reset */
+function blank(){
+  return {stone:null,type:null,color:null,colorNote:'',clarity:null,origin:null,originNote:'',
+          clarityNote:'',weight:null,ct:'',form:null,treat:null,appear:[],appearNote:'',
+          price:'',total:'',pbasis:null,pnote:'',cert:[],certNote:'',
+          trend:null,buyer:[],buyerNote:'',bnote:'',booth:'',vendor:'',
+          video:false,card:false,note:''};
+}
+let f=blank();
 let reorder=false;
 
-/* ================= storage ================= */
+/* ============ storage ============ */
 const inApp=(typeof window.storage!=='undefined' && window.storage);
 const store=inApp?{
   async get(k){const r=await window.storage.get(k);return r&&r.value;},
@@ -201,8 +229,8 @@ const store=inApp?{
   async set(k,v){localStorage.setItem(k,v);}
 };
 function setStatus(ok,msg){
-  const el2=document.getElementById('statusbar');
-  el2.style.color=ok?'var(--mute)':'var(--alert)'; el2.textContent=msg;
+  const e=document.getElementById('statusbar');
+  e.style.color=ok?'var(--mute)':'var(--alert)'; e.textContent=msg;
 }
 function stamp(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 
@@ -214,16 +242,16 @@ async function load(){
   if(!Array.isArray(db.order)||!db.order.length) db.order=DEFAULT_ORDER.slice();
   DEFAULT_ORDER.forEach(id=>{if(!db.order.includes(id))db.order.push(id);});
   db.order=db.order.filter(id=>FIELDS[id]);
-  STONES.forEach(s=>{if(db.tally[s.k]==null)db.tally[s.k]=0;});
+  if(!db.snote) db.snote={};
   await selftest(src);
   render();
   await restoreDraft();
 }
 async function selftest(src){
   try{
-    const probe='t'+Date.now();
-    await store.set(KEY+'-probe',probe);
-    if(await store.get(KEY+'-probe')!==probe) throw 0;
+    const p='t'+Date.now();
+    await store.set(KEY+'-probe',p);
+    if(await store.get(KEY+'-probe')!==p) throw 0;
     setStatus(true,'Storage OK'+(inApp?' (app)':' (on device, works offline)')+
       (src?' · loaded '+db.records.length+' from '+src:''));
   }catch(e){
@@ -252,12 +280,13 @@ async function restoreDraft(){
   try{
     const v=await store.get(DRAFT); if(!v)return;
     const d=JSON.parse(v); if(!d||typeof d!=='object')return;
-    f=Object.assign(f,d); render();
+    f=Object.assign(blank(),d); render();
   }catch(e){}
 }
 
-/* ================= builders ================= */
-function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+/* ============ builders ============ */
+function el(t,c,h){const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
+function cur(){return STONES.find(x=>x.k===f.stone);}
 function chips(items,key,multi){
   const box=el('div','chips');
   items.forEach(it=>{
@@ -273,13 +302,13 @@ function chips(items,key,multi){
   });
   return box;
 }
-function textInput(key,ph,cls){
+function txt(key,ph,cls){
   const i=el('input',cls||'');
   i.type='text'; i.placeholder=ph; i.value=f[key]||''; i.autocomplete='off';
   i.oninput=()=>{f[key]=i.value;saveDraft();};
   return i;
 }
-function numInput(key,ph){
+function num(key,ph){
   const i=el('input');
   i.type='tel'; i.inputMode='decimal'; i.placeholder=ph;
   i.value=f[key]||''; i.autocomplete='off';
@@ -288,80 +317,79 @@ function numInput(key,ph){
 }
 
 function buildRow(id){
-  const spec=FIELDS[id];
-  const row=el('div','row');
+  const spec=FIELDS[id], s=cur();
+  if(spec.cond && !spec.cond(s)) return null;
+  const row=el('div','row'+(spec.aux?' aux':''));
   const lab=el('div','lab');
   lab.appendChild(el('span',null,spec.label));
-  if(id==='stone'){
-    const s=STONES.find(x=>x.k===f.stone);
-    lab.appendChild(el('i',null,s?TIERNAME[s.tier]:''));
-  } else if(spec.hint) lab.appendChild(el('i',null,spec.hint));
+  if(spec.hint) lab.appendChild(el('i',null,spec.hint));
   row.appendChild(lab);
 
   if(id==='booth'){
     const two=el('div','two');
-    const b=textInput('booth','Booth no.'); b.style.flex='0 0 40%';
-    two.appendChild(b); two.appendChild(textInput('vendor','Vendor name'));
+    const b=txt('booth','Booth no.'); b.style.flex='0 0 40%';
+    two.appendChild(b); two.appendChild(txt('vendor','Vendor name'));
     row.appendChild(two);
   }
   else if(id==='stone'){
     const box=el('div','chips');
-    STONES.forEach(s=>{
-      const b=el('button','chip stone','<span class="swatch" style="background:'+s.c+'"></span>'+s.k);
-      if(f.stone===s.k){b.classList.add('sel');b.style.background=s.c;}
+    STONES.forEach(st=>{
+      const b=el('button','chip stone','<span class="swatch" style="background:'+st.c+'"></span>'+st.k);
+      if(f.stone===st.k){b.classList.add('sel');b.style.background=st.c;}
       b.onclick=()=>{
-        if(f.stone!==s.k){f.stone=s.k;f.origin=null;}
-        else f.stone=null;
+        if(f.stone!==st.k){f.stone=st.k;f.type=null;f.color=null;f.origin=null;}
+        else{f.stone=null;f.type=null;f.color=null;f.origin=null;}
         render();saveDraft();
       };
       box.appendChild(b);
     });
     row.appendChild(box);
-    if(f.stone==='Other') row.appendChild(textInput('note','Material name','mt'));
+  }
+  else if(id==='type') row.appendChild(chips(s.type,'type',false));
+  else if(id==='color'){
+    const opts=(s?s.col:[]).concat([UNSTATED]);
+    if(!s) row.appendChild(el('div','note','Pick a material first, or use the note line.'));
+    if(opts.length>1) row.appendChild(chips(opts,'color',false));
+    row.appendChild(txt('colorNote','Colour note — vendor wording, comparison, tone','mt'));
+  }
+  else if(id==='clarity'){
+    row.appendChild(chips(CLARITY,'clarity',false));
+    row.appendChild(txt('clarityNote','Clarity note','mt'));
   }
   else if(id==='origin'){
-    const s=STONES.find(x=>x.k===f.stone);
     const opts=(s?s.o:[]).concat([UNSTATED]);
-    if(!s) row.appendChild(el('div','note','Pick a material first, or just use the note line.'));
+    if(!s) row.appendChild(el('div','note','Pick a material first, or use the note line.'));
     row.appendChild(chips(opts,'origin',false));
-    row.appendChild(textInput('originNote','Origin note — anything the vendor said','mt'));
+    row.appendChild(txt('originNote','Origin note — anything the vendor said','mt'));
   }
   else if(id==='weight') row.appendChild(chips(WEIGHT,'weight',false));
-  else if(id==='ct') row.appendChild(numInput('ct','e.g. 3.62'));
+  else if(id==='ct') row.appendChild(num('ct','e.g. 3.62'));
   else if(id==='form') row.appendChild(chips(FORM,'form',false));
-  else if(id==='treat'){
-    row.appendChild(chips(TREAT,'treat',false));
-    if(f.treat===OTHER||f.treat===UNSTATED)
-      row.appendChild(textInput('treatNote','Treatment wording as stated','mt'));
-  }
+  else if(id==='treat') row.appendChild(chips(TREAT,'treat',false));
   else if(id==='appear'){
     row.appendChild(chips(APPEAR,'appear',true));
-    row.appendChild(textInput('appearNote','One line on how it looks','mt'));
+    row.appendChild(txt('appearNote','外觀補充，一句話','mt'));
   }
   else if(id==='price'){
-    const a=el('div','money');
-    a.appendChild(numInput('price','0')); a.appendChild(el('span',null,'USD / ct'));
+    const a=el('div','money'); a.appendChild(num('price','0')); a.appendChild(el('span',null,'USD / ct'));
     row.appendChild(a);
-    const b=el('div','money');
-    b.appendChild(numInput('total','0')); b.appendChild(el('span',null,'USD total'));
+    const b=el('div','money'); b.appendChild(num('total','0')); b.appendChild(el('span',null,'USD total'));
     row.appendChild(b);
     const pb=chips(PBASIS,'pbasis',false); pb.classList.add('mt'); row.appendChild(pb);
-    row.appendChild(textInput('pnote','Price conditions — quantity, suite, extras…','mt'));
+    row.appendChild(txt('pnote','Price conditions — quantity, suite, extras…','mt'));
   }
-  else if(id==='cert') row.appendChild(chips(CERT,'cert',true));
-  else if(id==='grade') row.appendChild(chips(GRADE,'grade',false));
+  else if(id==='cert'){
+    row.appendChild(chips(CERT,'cert',true));
+    row.appendChild(txt('certNote','Cert note — report no., date, wording','mt'));
+  }
   else if(id==='trend') row.appendChild(chips(TREND,'trend',false));
-  else if(id==='buyer') row.appendChild(chips(BUYER,'buyer',true));
-  else if(id==='flags'){
-    const box=el('div','chips');
-    const v=el('button','chip'+(f.video?' sel':''),'Video taken');
-    v.onclick=()=>{f.video=!f.video;render();saveDraft();};
-    const c=el('button','chip'+(f.card?' sel':''),'Card collected');
-    c.onclick=()=>{f.card=!f.card;render();saveDraft();};
-    box.appendChild(v); box.appendChild(c); row.appendChild(box);
-    row.appendChild(el('div','note','Shoot the booth sign or card first, then the stones.'));
+  else if(id==='buyer'){
+    row.appendChild(chips(BUYER,'buyer',true));
+    row.appendChild(txt('buyerNote','例：這兩天誰在問？哪個等級走得動？','mt'));
   }
-  else if(id==='note') row.appendChild(textInput('note','One line is enough'));
+  else if(id==='bnote')
+    row.appendChild(txt('bnote','例：攤位外觀、主力展示品類、人流'));
+  else if(id==='note') row.appendChild(txt('note','One line is enough'));
 
   if(reorder){
     const a=el('div','arrows');
@@ -385,37 +413,39 @@ function toggleReorder(){
 }
 function render(){
   const box=document.getElementById('form'); box.innerHTML='';
-  db.order.forEach(id=>box.appendChild(buildRow(id)));
+  db.order.forEach(id=>{const r=buildRow(id); if(r)box.appendChild(r);});
   document.getElementById('cnt').textContent=db.records.length;
   document.getElementById('savebtn').disabled=!f.stone&&!f.price&&!f.total;
-  drawTally(); drawRecords();
+  drawSum(); drawRecords();
 }
 
-/* ================= save ================= */
-function flash(msg){
-  const e=document.getElementById('flash'); e.textContent=msg; e.classList.add('on');
+/* ============ save ============ */
+function flash(m){
+  const e=document.getElementById('flash'); e.textContent=m; e.classList.add('on');
   clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove('on'),1300);
 }
 function save(){
   if(!f.stone&&!f.price&&!f.total){flash('Needs a material or a price');return;}
   db.records.push({
     t:new Date().toISOString(), booth:f.booth.trim(), vendor:f.vendor.trim(),
-    stone:(f.stone==='Other'?(f.note.trim()||'Other'):(f.stone||'')), ckey:f.stone,
+    stone:f.stone||'', type:f.type||'', color:f.color||'', colorNote:f.colorNote.trim(),
+    clarity:f.clarity||'', clarityNote:f.clarityNote.trim(),
     origin:f.origin||'', originNote:f.originNote.trim(),
-    weight:f.weight||'', ct:f.ct.trim(), form:f.form||'',
-    treat:f.treat||'', treatNote:f.treatNote.trim(),
+    weight:f.weight||'', ct:f.ct.trim(), form:f.form||'', treat:f.treat||'',
     appear:f.appear.join(' / '), appearNote:f.appearNote.trim(),
     price:f.price.trim(), total:f.total.trim(), pbasis:f.pbasis||'', pnote:f.pnote.trim(),
-    cert:f.cert.join(' / '), grade:f.grade||'', trend:f.trend||'',
-    buyer:f.buyer.join(' / '), video:f.video?'Y':'', card:f.card?'Y':'', note:f.note.trim()
+    cert:f.cert.join(' / '), certNote:f.certNote.trim(), trend:f.trend||'',
+    buyer:f.buyer.join(' / '), buyerNote:f.buyerNote.trim(), bnote:f.bnote.trim(),
+    video:f.video?'Y':'', card:f.card?'Y':'', note:f.note.trim()
   });
   persist();
-  const keep={booth:f.booth,vendor:f.vendor,stone:f.stone};
-  f=Object.assign({},BLANK,keep);
+  /* full reset — only booth, vendor and material carry over */
+  const keep={booth:f.booth, vendor:f.vendor, stone:f.stone};
+  f=Object.assign(blank(), keep);
   store.set(DRAFT,'').catch(()=>{});
   render();
   window.scrollTo({top:0,behavior:'smooth'});
-  flash('Saved — entry '+db.records.length);
+  flash('Saved — entry '+db.records.length+', form cleared');
 }
 function undo(){
   if(!db.records.length){flash('Nothing to undo');return;}
@@ -423,47 +453,50 @@ function undo(){
   flash('Removed '+(r.stone||'entry')+(r.price?' '+r.price:''));
 }
 
-/* ================= tally ================= */
-function drawTally(){
-  const box=document.getElementById('tallylist'); box.innerHTML='';
+/* ============ summary ============ */
+function drawSum(){
+  const box=document.getElementById('sumlist'); if(!box) return;
+  box.innerHTML='';
   STONES.forEach(s=>{
-    const d=el('div','tallyrow','<span class="swatch" style="background:'+s.c+'"></span>'+
-      '<span class="tallyname">'+s.k+'</span><span class="tallynum">'+(db.tally[s.k]||0)+'</span>');
-    const m=el('button','minus','−');
-    m.onclick=()=>{db.tally[s.k]=Math.max(0,(db.tally[s.k]||0)-1);persist();drawTally();};
-    const p=el('button','plus','+');
-    p.onclick=()=>{db.tally[s.k]=(db.tally[s.k]||0)+1;persist();drawTally();};
-    d.appendChild(m); d.appendChild(p); box.appendChild(d);
+    const rs=db.records.filter(r=>r.stone===s.k);
+    const booths=new Set(rs.map(r=>r.booth).filter(Boolean));
+    const ps=rs.map(r=>parseFloat(r.price)).filter(v=>!isNaN(v)&&v>0);
+    const last=rs.length?rs[rs.length-1].t.slice(5,16).replace('T',' '):'';
+    const d=el('div','sumrow');
+    const top=el('div','sumtop','<span class="swatch" style="background:'+s.c+'"></span>'+
+      '<span class="sumname">'+s.k+'</span><span class="sumn">'+rs.length+'</span>');
+    d.appendChild(top);
+    const bits=[];
+    if(booths.size) bits.push(booths.size+' booth'+(booths.size>1?'s':''));
+    if(ps.length) bits.push('$'+Math.min(...ps)+'–'+Math.max(...ps)+'/ct');
+    if(last) bits.push(last);
+    d.appendChild(el('div','sumsub',bits.length?bits.join(' · '):'—'));
     const n=el('input'); n.type='text'; n.placeholder='Observation';
-    n.value=(db.tnote&&db.tnote[s.k])||'';
-    n.style.cssText='margin:-4px 0 12px;font-size:14px;padding:8px 10px';
-    n.oninput=()=>{db.tnote=db.tnote||{};db.tnote[s.k]=n.value;persist();};
-    box.appendChild(n);
+    n.value=db.snote[s.k]||'';
+    n.style.cssText='margin-top:8px;font-size:14px;padding:8px 10px';
+    n.oninput=()=>{db.snote[s.k]=n.value;persist();};
+    d.appendChild(n);
+    box.appendChild(d);
   });
 }
-function resetTally(){
-  if(!confirm('Reset all density counts to zero?')) return;
-  STONES.forEach(s=>db.tally[s.k]=0); db.tnote={}; persist(); drawTally();
-}
 
-/* ================= data ================= */
+/* ============ data ============ */
 function drawRecords(){
   const box=document.getElementById('reclist');
   if(!db.records.length){box.innerHTML='<div class="empty">No records yet.<br>Go back to Log to start.</div>';return;}
   box.innerHTML='';
   [...db.records].reverse().forEach(r=>{
-    const s=STONES.find(x=>x.k===(r.ckey||r.stone));
+    const s=STONES.find(x=>x.k===r.stone);
     const d=el('div','rec');
     const amt=r.price?'$'+r.price+'/ct':(r.total?'$'+r.total:'');
     d.innerHTML=(amt?'<span class="amt">'+amt+'</span>':'')+
       '<b><span class="swatch" style="background:'+(s?s.c:'#999')+'"></span>'+(r.stone||'—')+
-      (r.origin?' · '+r.origin:'')+'</b>'+
-      '<div class="sub">'+[r.ct?r.ct+'ct':(r.weight?r.weight+'ct':''),r.form,r.treat,r.treatNote,
-        r.grade,r.pbasis,r.cert,r.trend?'trend '+r.trend:'',r.appear,r.appearNote,r.pnote,
-        r.total&&r.price?'total $'+r.total:''].filter(Boolean).join(' · ')+'</div>'+
-      '<div class="sub">'+[r.t.slice(5,16).replace('T',' '),r.booth,r.vendor,
-        r.buyer?'buyers '+r.buyer:'',r.video?'video':'',r.card?'card':'',
-        r.originNote,r.note].filter(Boolean).join(' · ')+'</div>';
+      (r.type?' · '+r.type:'')+(r.origin?' · '+r.origin:'')+'</b>'+
+      '<div class="sub">'+[r.color,r.colorNote,r.clarity,r.ct?r.ct+'ct':r.weight,r.form,
+        r.treat,r.cert,r.certNote,r.pbasis,r.pnote,r.appear,r.appearNote,
+        r.trend?'trend '+r.trend:'',r.total&&r.price?'total $'+r.total:''].filter(Boolean).join(' · ')+'</div>'+
+      '<div class="sub">'+[r.t.slice(5,16).replace('T',' '),r.booth,r.vendor,r.originNote,
+        r.buyer,r.buyerNote,r.bnote,r.note].filter(Boolean).join(' · ')+'</div>';
     box.appendChild(d);
   });
 }
@@ -471,24 +504,30 @@ function csv(){
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const L=[HEAD.map(q).join(',')];
   db.records.forEach(r=>L.push([r.t.slice(0,16).replace('T',' '),r.booth,r.vendor,r.stone,
-    r.origin,r.originNote,r.weight,r.ct,r.form,r.treat,r.treatNote,r.appear,r.appearNote,
-    r.price,r.total,r.pbasis,r.pnote,r.cert,r.grade,r.trend,r.buyer,r.video,r.card,r.note
-    ].map(q).join(',')));
+    r.type,r.color,r.colorNote,r.clarity,r.clarityNote,r.origin,r.originNote,r.weight,r.ct,r.form,r.treat,
+    r.appear,r.appearNote,r.price,r.total,r.pbasis,r.pnote,r.cert,r.certNote,r.trend,
+    r.buyer,r.buyerNote,r.bnote,r.video,r.card,r.note].map(q).join(',')));
   L.push('');
-  L.push([q('Density'),q('Count'),q('Observation')].join(','));
-  STONES.forEach(s=>L.push([q(s.k),q(db.tally[s.k]||0),q((db.tnote&&db.tnote[s.k])||'')].join(',')));
+  L.push([q('Material'),q('Entries'),q('Booths'),q('Min USD/ct'),q('Max USD/ct'),q('Observation')].join(','));
+  STONES.forEach(s=>{
+    const rs=db.records.filter(r=>r.stone===s.k);
+    const ps=rs.map(r=>parseFloat(r.price)).filter(v=>!isNaN(v)&&v>0);
+    L.push([q(s.k),q(rs.length),q(new Set(rs.map(r=>r.booth).filter(Boolean)).size),
+      q(ps.length?Math.min(...ps):''),q(ps.length?Math.max(...ps):''),
+      q(db.snote[s.k]||'')].join(','));
+  });
   return L.join('\n');
 }
 function tsv(){
   return csv().split('\n').map(l=>{
-    const out=[];let cur='',qq=false;
+    const out=[];let c='',qq=false;
     for(let i=0;i<l.length;i++){
-      const c=l[i];
-      if(c==='"'){if(qq&&l[i+1]==='"'){cur+='"';i++;}else qq=!qq;}
-      else if(c===','&&!qq){out.push(cur);cur='';}
-      else cur+=c;
+      const ch=l[i];
+      if(ch==='"'){if(qq&&l[i+1]==='"'){c+='"';i++;}else qq=!qq;}
+      else if(ch===','&&!qq){out.push(c);c='';}
+      else c+=ch;
     }
-    out.push(cur);return out.join('\t');
+    out.push(c);return out.join('\t');
   }).join('\n');
 }
 function showText(){
@@ -509,20 +548,17 @@ async function copyCsv(){
   catch(e){showText();}
 }
 function wipe(){
-  if(!confirm('Erase all entries and density counts? This cannot be undone.')) return;
-  db.records=[]; db.tnote={}; STONES.forEach(s=>db.tally[s.k]=0);
-  persist(); render(); flash('Erased');
+  if(!confirm('Erase all entries? This cannot be undone.')) return;
+  db.records=[]; db.snote={}; persist(); render(); flash('Erased');
 }
 function tab(n){
-  ['log','tally','data'].forEach(x=>{
+  ['log','sum','data'].forEach(x=>{
     document.getElementById('v-'+x).classList.toggle('hide',x!==n);
     document.getElementById('tab-'+x).classList.toggle('on',x===n);
   });
   document.querySelector('.savebar').classList.toggle('hide',n!=='log');
   window.scrollTo(0,0);
 }
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 load();
 </script>
