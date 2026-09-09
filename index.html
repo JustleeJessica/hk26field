@@ -83,7 +83,7 @@
 <header>
   <div class="hbar">
     <div class="mark">JUSTLEE</div>
-    <div style="font-size:12px;color:var(--mute)">HK Fair 2026 · v4</div>
+    <div style="font-size:12px;color:var(--mute)">HK Fair 2026 · v7</div>
     <div class="hmeta"><span class="count" id="cnt">0</span> logged</div>
   </div>
   <div id="statusbar">Checking storage…</div>
@@ -169,7 +169,24 @@ const OTHER='其他';
 const UNSTATED='未說明';
 const WEIGHT=['1ct 以下','1–5ct','5–9.99ct','10ct 以上'];
 const FORM=['Loose','Ring','Pendant','Ring / pendant','Earrings','Necklace','Bracelet','Pair','Suite'];
-const TREAT=['No Heat','Untreated','Heated','No Oil (None)','Insignificant','Minor','Moderate','未說明'];
+const CUT=['Round','Oval','Cushion','Emerald cut','Octagon','Pear','Marquise','Heart',
+           'Trillion','Radiant','Princess','Baguette','Hexagon','Cabochon','Sugarloaf','其他'];
+const NOT_STATED='報告未提及', NOT_SAID='攤商未說';
+/* Correct term per species: No Heat only for corundum and spinel; emerald uses
+   the filling scale; everything else uses Untreated. The two unknown states are
+   always available, because "the report is silent" is not the same as "unheated". */
+function treatOptions(stone){
+  const tail=[NOT_STATED,NOT_SAID];
+  if(['紅寶石','藍寶石','Padparadscha','Spinel'].includes(stone))
+    return ['No Heat','Heated'].concat(tail);
+  if(stone==='祖母綠')
+    return ['No Oil (None)','Insignificant','Minor','Moderate'].concat(tail);
+  if(stone==='翡翠')
+    return ['未處理 A 貨','有處理 B/C 貨'].concat(tail);
+  if(stone==='彩鑽')
+    return ['Natural colour','Treated colour'].concat(tail);
+  return ['Untreated','Heated'].concat(tail);
+}
 const CLARITY=['IF','VVS1','VVS2','VS1','VS2','SI1','SI2'];
 const APPEAR=['顏色濃','顏色淡','火光強','透亮','變色效應','強變色',
               '內含包裹體','馬尾狀內含物','貓眼效應','星光效應','奶體'];
@@ -189,6 +206,7 @@ const FIELDS={
  ct:     {label:'Exact carat', hint:'e.g. 3.62'},
  form:   {label:'Loose or mounted'},
  treat:  {label:'Treatment'},
+ cut:    {label:'切割形狀'},
  appear: {label:'Appearance', hint:'multi-select'},
  price:  {label:'Price'},
  cert:   {label:'Certificate', hint:'multi-select'},
@@ -199,23 +217,24 @@ const FIELDS={
  note:   {label:'Note'}
 };
 const DEFAULT_ORDER=['booth','stone','type','form','weight','ct','origin','color','clarity',
-                     'cert','treat','price','appear','trend','buyer','bnote','flags','note'];
+                     'cert','treat','price','cut','appear','trend','buyer','bnote','flags','note'];
 
 /* Fixed export schema — never reorders. */
 const HEAD=['Time','Booth','Vendor','Material','Type','Type note','Colour','Colour note','Clarity',
-            'Clarity note','Origin','Origin note','Weight range','Carat','Form','Treatment',
+            'Clarity note','Origin','Origin note','Weight range','Carat','Form','Cut','Cut note','Treatment','Treatment wording',
             'Appearance','Appearance note','USD/ct','Total USD','Price basis','Price note',
             'Certificate','Cert other','Cert note','Appendix','6-mo trend','Trend note',
             'Buyer country','Buyer note','Booth note','Video','Their card','Our card','Note'];
 
 const KEY='justlee-hk-2026', BAK=KEY+'-bak', DRAFT=KEY+'-draft';
-let db={records:[],snote:{},order:DEFAULT_ORDER.slice()};
+let db={records:[],snote:{},order:DEFAULT_ORDER.slice(),sticky:false};
 
 /* every field listed here; arrays are rebuilt fresh on each reset */
 function blank(){
   return {stone:null,type:null,color:null,colorNote:'',clarity:null,origin:null,originNote:'',
           clarityNote:'',weight:null,ct:'',form:null,treat:null,appear:[],appearNote:'',
-          appendix:'',certOther:'',typeNote:'',trendNote:'',gave:false,
+          appendix:'',certOther:'',typeNote:'',treatNote:'',trendNote:'',gave:false,
+          cut:null,cutNote:'',
           price:'',total:'',pbasis:null,pnote:'',cert:[],certNote:'',
           trend:null,buyer:[],buyerNote:'',bnote:'',booth:'',vendor:'',
           video:false,card:false,note:''};
@@ -334,6 +353,13 @@ function buildRow(id){
     const b=txt('booth','Booth no.'); b.style.flex='0 0 40%';
     two.appendChild(b); two.appendChild(txt('vendor','Vendor name'));
     row.appendChild(two);
+    const kbox=el('div','chips'); kbox.classList.add('mt');
+    const kb=el('button','chip'+(db.sticky?' sel':''),'同一攤連續記錄');
+    kb.onclick=()=>{db.sticky=!db.sticky;persist();render();};
+    kbox.appendChild(kb); row.appendChild(kbox);
+    row.appendChild(el('div','note',db.sticky
+      ? '存檔後會保留攤位、商家、Material，其他全部清空。'
+      : '存檔後全部清空。同一攤要連續記多顆時再打開上面那個開關。'));
   }
   else if(id==='stone'){
     const box=el('div','chips');
@@ -373,7 +399,14 @@ function buildRow(id){
   else if(id==='weight') row.appendChild(chips(WEIGHT,'weight',false));
   else if(id==='ct') row.appendChild(num('ct','e.g. 3.62'));
   else if(id==='form') row.appendChild(chips(FORM,'form',false));
-  else if(id==='treat') row.appendChild(chips(TREAT,'treat',false));
+  else if(id==='treat'){
+    row.appendChild(chips(treatOptions(f.stone),'treat',false));
+    row.appendChild(txt('treatNote','抄下證書原文用字','mt'));
+  }
+  else if(id==='cut'){
+    row.appendChild(chips(CUT,'cut',false));
+    if(f.cut==='其他') row.appendChild(txt('cutNote','切割形狀自己填','mt'));
+  }
   else if(id==='appear'){
     row.appendChild(chips(APPEAR,'appear',true));
     row.appendChild(txt('appearNote','外觀補充，一句話','mt'));
@@ -456,6 +489,7 @@ function save(){
     clarity:f.clarity||'', clarityNote:f.clarityNote.trim(),
     origin:f.origin||'', originNote:f.originNote.trim(),
     weight:f.weight||'', ct:f.ct.trim(), form:f.form||'', treat:f.treat||'',
+    treatNote:f.treatNote.trim(), cut:f.cut||'', cutNote:f.cutNote.trim(),
     appear:f.appear.join(' / '), appearNote:f.appearNote.trim(),
     price:f.price.trim(), total:f.total.trim(), pbasis:f.pbasis||'', pnote:f.pnote.trim(),
     typeNote:f.typeNote.trim(), cert:f.cert.join(' / '), certOther:f.certOther.trim(),
@@ -466,7 +500,7 @@ function save(){
   });
   persist();
   /* full reset — only booth, vendor and material carry over */
-  const keep={booth:f.booth, vendor:f.vendor, stone:f.stone};
+  const keep=db.sticky?{booth:f.booth, vendor:f.vendor, stone:f.stone}:{};
   f=Object.assign(blank(), keep);
   store.set(DRAFT,'').catch(()=>{});
   render();
@@ -530,7 +564,7 @@ function csv(){
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const L=[HEAD.map(q).join(',')];
   db.records.forEach(r=>L.push([r.t.slice(0,16).replace('T',' '),r.booth,r.vendor,r.stone,
-    r.type,r.typeNote,r.color,r.colorNote,r.clarity,r.clarityNote,r.origin,r.originNote,r.weight,r.ct,r.form,r.treat,
+    r.type,r.typeNote,r.color,r.colorNote,r.clarity,r.clarityNote,r.origin,r.originNote,r.weight,r.ct,r.form,r.cut,r.cutNote,r.treat,r.treatNote,
     r.appear,r.appearNote,r.price,r.total,r.pbasis,r.pnote,r.cert,r.certOther,r.certNote,r.appendix,r.trend,r.trendNote,
     r.buyer,r.buyerNote,r.bnote,r.video,r.card,r.gave,r.note].map(q).join(',')));
   L.push('');
