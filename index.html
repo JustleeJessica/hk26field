@@ -83,50 +83,51 @@
 <header>
   <div class="hbar">
     <div class="mark">JUSTLEE</div>
-    <div style="font-size:12px;color:var(--mute)">HK Fair 2026 · v7</div>
-    <div class="hmeta"><span class="count" id="cnt">0</span> logged</div>
+    <div style="font-size:12px;color:var(--mute)">香港展 2026 · v8</div>
+    <div class="hmeta">已記 <span class="count" id="cnt">0</span> 筆</div>
   </div>
-  <div id="statusbar">Checking storage…</div>
+  <div id="statusbar">檢查儲存狀態…</div>
   <nav>
-    <button id="tab-log" class="on" onclick="tab('log')">Log</button>
-    <button id="tab-sum" onclick="tab('sum')">Summary</button>
-    <button id="tab-data" onclick="tab('data')">Data</button>
+    <button id="tab-log" class="on" onclick="tab('log')">詢價紀錄</button>
+    <button id="tab-sum" onclick="tab('sum')">彙總</button>
+    <button id="tab-data" onclick="tab('data')">資料</button>
   </nav>
 </header>
 
 <div class="wrap" id="v-log">
   <div id="reorderbanner" class="banner hide">
-    Reordering. Use the arrows to move fields up or down, then tap Done. Saved records are not affected.
+    調整順序中。用右邊的箭頭把常用的欄位往上搬，改完按下面的按鈕結束。已記錄的資料不受影響。
   </div>
   <div id="form"></div>
-  <button class="btn danger" id="reorderbtn" onclick="toggleReorder()">Reorder fields</button>
+  <button class="btn danger" id="reorderbtn" onclick="toggleReorder()">調整欄位順序 Reorder</button>
+  <button class="btn danger" onclick="resetOrder()">回到預設順序 Reset order</button>
   <div style="height:8px"></div>
 </div>
 
 <div class="wrap hide" id="v-sum">
-  <div class="hint">Counted automatically from your entries. Booths = distinct booth numbers you logged, so this reflects what you actually asked about, not everything on the floor.</div>
+  <div class="hint">由你的紀錄自動計算。攤位數是你填過的不重複攤位號，所以這反映的是你實際問過的範圍，不是全場的供給。</div>
   <div id="sumlist"></div>
   <div style="height:20px"></div>
 </div>
 
 <div class="wrap hide" id="v-data">
-  <h2 class="sec">Export</h2>
-  <button class="btn dark" onclick="dl()">Download CSV</button>
-  <button class="btn" onclick="copyCsv()">Copy as table</button>
-  <button class="btn" onclick="showText()">Show as text — long-press to copy, or screenshot</button>
+  <h2 class="sec">匯出</h2>
+  <button class="btn dark" onclick="dl()">下載 CSV</button>
+  <button class="btn" onclick="copyCsv()">複製成表格</button>
+  <button class="btn" onclick="showText()">顯示成文字，長按複製或截圖</button>
   <textarea id="rawout" class="hide" readonly style="height:180px;margin-top:10px;font-family:monospace"></textarea>
-  <div class="hint">Export column order is fixed and does not follow the on-screen order.</div>
-  <h2 class="sec">All records</h2>
+  <div class="hint">匯出的欄位順序是固定的，不會跟著畫面順序改變。</div>
+  <h2 class="sec">全部紀錄</h2>
   <div id="reclist"></div>
   <div style="height:14px"></div>
-  <button class="btn danger" onclick="wipe()">Erase everything</button>
+  <button class="btn danger" onclick="wipe()">清空所有資料</button>
   <div style="height:24px"></div>
 </div>
 
 <div class="savebar">
   <div class="inner">
-    <button class="undo" onclick="undo()">Undo last</button>
-    <button class="save" id="savebtn" onclick="save()">Save entry</button>
+    <button class="undo" onclick="undo()">刪上一筆</button>
+    <button class="save" id="savebtn" onclick="save()">存這筆</button>
   </div>
 </div>
 <div class="flash" id="flash"></div>
@@ -196,28 +197,29 @@ const TREND=['Up','Flat','Down','No answer'];
 const BUYER=['Middle East','China','SE Asia','Europe / US','TW / HK','Japan / Korea','India','No answer'];
 
 const FIELDS={
- booth:  {label:'Booth & vendor', hint:'optional — stays for the next entry'},
- stone:  {label:'Material'},
- type:   {label:'Type', hint:'依證書記載', cond:s=>s&&s.type},
- color:  {label:'Colour', cond:s=>s&&s.col&&s.col.length},
- clarity:{label:'Clarity', hint:'diamond scale', cond:s=>s&&s.k==='彩鑽'},
- origin: {label:'Origin'},
- weight: {label:'Weight range'},
- ct:     {label:'Exact carat', hint:'e.g. 3.62'},
- form:   {label:'Loose or mounted'},
- treat:  {label:'Treatment'},
- cut:    {label:'切割形狀'},
- appear: {label:'Appearance', hint:'multi-select'},
- price:  {label:'Price'},
- cert:   {label:'Certificate', hint:'multi-select'},
- trend:  {label:'6-month trend — supplementary', hint:'as stated by vendor', aux:true},
- buyer:  {label:'Buyer — supplementary', aux:true},
- bnote:  {label:'Booth notes — supplementary', aux:true},
- flags:  {label:'影片與名片'},
- note:   {label:'Note'}
+ booth:   {label:'攤位與商家 Booth & vendor', hint:'選填，會保留到下一筆'},
+ stone:   {label:'寶石種類 Material'},
+ type:    {label:'類型 Type', hint:'依證書記載', cond:s=>s&&s.type},
+ form:    {label:'裸石或成品 Loose or mounted'},
+ weight:  {label:'重量級距 Weight range'},
+ ct:      {label:'實際克拉 Exact carat', hint:'例如 3.62'},
+ origin:  {label:'產地 Origin'},
+ treat:   {label:'處理方式 Treatment'},
+ color:   {label:'顏色 Colour', cond:s=>s&&s.col&&s.col.length},
+ cut:     {label:'切割形狀 Cut'},
+ clarity: {label:'淨度 Clarity', hint:'鑽石分級', cond:s=>s&&s.k==='彩鑽'},
+ cert:    {label:'證書 Certificate', hint:'可複選'},
+ price:   {label:'報價 Price'},
+ appear:  {label:'外觀 Appearance', hint:'可複選'},
+ trend:   {label:'半年走勢 Trend｜補充', hint:'攤商說法', aux:true},
+ buyer:   {label:'買家 Buyer｜補充', aux:true},
+ bnote:   {label:'攤位觀察 Booth notes｜補充', aux:true},
+ flags:   {label:'影片與名片 Video & cards'},
+ note:    {label:'備註 Note'}
 };
-const DEFAULT_ORDER=['booth','stone','type','form','weight','ct','origin','color','clarity',
-                     'cert','treat','price','cut','appear','trend','buyer','bnote','flags','note'];
+const DEFAULT_ORDER=['booth','stone','type','form','weight','ct','origin','treat',
+                     'color','cut','clarity','cert','price','appear','trend',
+                     'buyer','bnote','flags','note'];
 
 /* Fixed export schema — never reorders. */
 const HEAD=['Time','Booth','Vendor','Material','Type','Type note','Colour','Colour note','Clarity',
@@ -275,10 +277,10 @@ async function selftest(src){
     const p='t'+Date.now();
     await store.set(KEY+'-probe',p);
     if(await store.get(KEY+'-probe')!==p) throw 0;
-    setStatus(true,'Storage OK'+(inApp?' (app)':' (on device, works offline)')+
-      (src?' · loaded '+db.records.length+' from '+src:''));
+    setStatus(true,'儲存正常'+(inApp?'（App）':'（本機，離線可用）')+
+      (src?' · 已載入 '+db.records.length+' 筆':''));
   }catch(e){
-    setStatus(false,'⚠ Storage unavailable. Use pen and paper, or tap "Show as text" on the Data tab after every entry and screenshot it.');
+    setStatus(false,'⚠ 儲存無法使用。改用紙筆，或每筆記完到「資料」頁按「顯示成文字」截圖。');
   }
 }
 let saving=false,dirty=false;
@@ -290,10 +292,10 @@ async function persist(){
     await store.set(KEY,payload); await store.set(BAK,payload);
     const back=await store.get(KEY);
     if(!back||JSON.parse(back).records.length!==db.records.length) throw 0;
-    setStatus(true,db.records.length+' saved · '+stamp()+
-      (db.records.length&&db.records.length%10===0?' · time to export a backup':''));
+    setStatus(true,'已存 '+db.records.length+' 筆 · '+stamp()+
+      (db.records.length&&db.records.length%10===0?' · 建議匯出一次備份':''));
   }catch(e){
-    setStatus(false,'⚠ Entry '+db.records.length+' failed to save. Go to Data, tap "Show as text" and screenshot it. Do not close this page.');
+    setStatus(false,'⚠ 第 '+db.records.length+' 筆存檔失敗。到「資料」頁按「顯示成文字」截圖保存，不要關掉這頁。');
   }
   saving=false;
   if(dirty){dirty=false;persist();}
@@ -350,8 +352,8 @@ function buildRow(id){
 
   if(id==='booth'){
     const two=el('div','two');
-    const b=txt('booth','Booth no.'); b.style.flex='0 0 40%';
-    two.appendChild(b); two.appendChild(txt('vendor','Vendor name'));
+    const b=txt('booth','攤位號'); b.style.flex='0 0 40%';
+    two.appendChild(b); two.appendChild(txt('vendor','商家名'));
     row.appendChild(two);
     const kbox=el('div','chips'); kbox.classList.add('mt');
     const kb=el('button','chip'+(db.sticky?' sel':''),'同一攤連續記錄');
@@ -378,26 +380,26 @@ function buildRow(id){
   else if(id==='type'){
     row.appendChild(chips(s.type,'type',false));
     if(f.type==='其他'||f.type==='未確認'||f.type==='未測試')
-      row.appendChild(txt('typeNote','Type 補充','mt'));
+      row.appendChild(txt('typeNote','類型補充','mt'));
   }
   else if(id==='color'){
     const opts=(s?s.col:[]).concat([OTHER,UNSTATED]);
     if(!s) row.appendChild(el('div','note','Pick a material first, or use the note line.'));
     if(opts.length>1) row.appendChild(chips(opts,'color',false));
-    row.appendChild(txt('colorNote','Colour note — vendor wording, comparison, tone','mt'));
+    row.appendChild(txt('colorNote','顏色補充：攤商用字、比對、色調','mt'));
   }
   else if(id==='clarity'){
     row.appendChild(chips(CLARITY,'clarity',false));
-    row.appendChild(txt('clarityNote','Clarity note','mt'));
+    row.appendChild(txt('clarityNote','淨度補充','mt'));
   }
   else if(id==='origin'){
     const opts=(s?s.o:[]).concat([OTHER,UNSTATED]);
     if(!s) row.appendChild(el('div','note','Pick a material first, or use the note line.'));
     row.appendChild(chips(opts,'origin',false));
-    row.appendChild(txt('originNote','Origin note — anything the vendor said','mt'));
+    row.appendChild(txt('originNote','產地補充：攤商說了什麼','mt'));
   }
   else if(id==='weight') row.appendChild(chips(WEIGHT,'weight',false));
-  else if(id==='ct') row.appendChild(num('ct','e.g. 3.62'));
+  else if(id==='ct') row.appendChild(num('ct','例 3.62'));
   else if(id==='form') row.appendChild(chips(FORM,'form',false));
   else if(id==='treat'){
     row.appendChild(chips(treatOptions(f.stone),'treat',false));
@@ -412,12 +414,12 @@ function buildRow(id){
     row.appendChild(txt('appearNote','外觀補充，一句話','mt'));
   }
   else if(id==='price'){
-    const a=el('div','money'); a.appendChild(num('price','0')); a.appendChild(el('span',null,'USD / ct'));
+    const a=el('div','money'); a.appendChild(num('price','0')); a.appendChild(el('span',null,'USD / 克拉'));
     row.appendChild(a);
-    const b=el('div','money'); b.appendChild(num('total','0')); b.appendChild(el('span',null,'USD total'));
+    const b=el('div','money'); b.appendChild(num('total','0')); b.appendChild(el('span',null,'USD 總價'));
     row.appendChild(b);
     const pb=chips(PBASIS,'pbasis',false); pb.classList.add('mt'); row.appendChild(pb);
-    row.appendChild(txt('pnote','Price conditions — quantity, suite, extras…','mt'));
+    row.appendChild(txt('pnote','報價條件：數量、成套、附帶條件…','mt'));
   }
   else if(id==='cert'){
     row.appendChild(chips(CERT,'cert',true));
@@ -446,7 +448,7 @@ function buildRow(id){
   }
   else if(id==='bnote')
     row.appendChild(txt('bnote','例：攤位外觀、主力展示品類、人流'));
-  else if(id==='note') row.appendChild(txt('note','One line is enough'));
+  else if(id==='note') row.appendChild(txt('note','一句話就好'));
 
   if(reorder){
     const a=el('div','arrows');
@@ -462,10 +464,15 @@ function move(id,d){
   db.order.splice(j,0,db.order.splice(i,1)[0]);
   persist(); render(); window.scrollTo({top:0,behavior:'smooth'});
 }
+function resetOrder(){
+  if(!confirm('回到預設順序？已記錄的資料不受影響。')) return;
+  db.order=DEFAULT_ORDER.slice(); persist(); render();
+  flash('已回到預設順序');
+}
 function toggleReorder(){
   reorder=!reorder;
   document.getElementById('reorderbanner').classList.toggle('hide',!reorder);
-  document.getElementById('reorderbtn').textContent=reorder?'Done — back to logging':'Reorder fields';
+  document.getElementById('reorderbtn').textContent=reorder?'完成，回去記錄 Done':'調整欄位順序 Reorder';
   render();
 }
 function render(){
@@ -482,7 +489,7 @@ function flash(m){
   clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove('on'),1300);
 }
 function save(){
-  if(!f.stone&&!f.price&&!f.total){flash('Needs a material or a price');return;}
+  if(!f.stone&&!f.price&&!f.total){flash('至少要有品項或報價');return;}
   db.records.push({
     t:new Date().toISOString(), booth:f.booth.trim(), vendor:f.vendor.trim(),
     stone:f.stone||'', type:f.type||'', color:f.color||'', colorNote:f.colorNote.trim(),
@@ -505,12 +512,12 @@ function save(){
   store.set(DRAFT,'').catch(()=>{});
   render();
   window.scrollTo({top:0,behavior:'smooth'});
-  flash('Saved — entry '+db.records.length+', form cleared');
+  flash('已存 — 第 '+db.records.length+' 筆，欄位已清空');
 }
 function undo(){
-  if(!db.records.length){flash('Nothing to undo');return;}
+  if(!db.records.length){flash('沒有紀錄');return;}
   const r=db.records.pop(); persist(); render();
-  flash('Removed '+(r.stone||'entry')+(r.price?' '+r.price:''));
+  flash('刪掉：'+(r.stone||'一筆')+(r.price?' '+r.price:''));
 }
 
 /* ============ summary ============ */
@@ -531,7 +538,7 @@ function drawSum(){
     if(ps.length) bits.push('$'+Math.min(...ps)+'–'+Math.max(...ps)+'/ct');
     if(last) bits.push(last);
     d.appendChild(el('div','sumsub',bits.length?bits.join(' · '):'—'));
-    const n=el('input'); n.type='text'; n.placeholder='Observation';
+    const n=el('input'); n.type='text'; n.placeholder='觀察備註';
     n.value=db.snote[s.k]||'';
     n.style.cssText='margin-top:8px;font-size:14px;padding:8px 10px';
     n.oninput=()=>{db.snote[s.k]=n.value;persist();};
@@ -543,7 +550,7 @@ function drawSum(){
 /* ============ data ============ */
 function drawRecords(){
   const box=document.getElementById('reclist');
-  if(!db.records.length){box.innerHTML='<div class="empty">No records yet.<br>Go back to Log to start.</div>';return;}
+  if(!db.records.length){box.innerHTML='<div class="empty">還沒有紀錄。<br>回「詢價紀錄」開始。</div>';return;}
   box.innerHTML='';
   [...db.records].reverse().forEach(r=>{
     const s=STONES.find(x=>x.k===r.stone);
@@ -594,22 +601,22 @@ function showText(){
   const t=document.getElementById('rawout');
   t.value=tsv(); t.classList.remove('hide'); t.focus(); t.select();
   t.scrollIntoView({behavior:'smooth',block:'center'});
-  flash('Long-press to copy, or screenshot');
+  flash('長按選取複製，或直接截圖');
 }
 function dl(){
   const b=new Blob(['\uFEFF'+csv()],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(b);
   a.download='JUSTLEE_HK2026_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click(); URL.revokeObjectURL(a.href); flash('Downloaded');
+  a.click(); URL.revokeObjectURL(a.href); flash('已下載');
 }
 async function copyCsv(){
-  try{await navigator.clipboard.writeText(tsv());flash('Copied');}
+  try{await navigator.clipboard.writeText(tsv());flash('已複製，可直接貼上');}
   catch(e){showText();}
 }
 function wipe(){
-  if(!confirm('Erase all entries? This cannot be undone.')) return;
-  db.records=[]; db.snote={}; persist(); render(); flash('Erased');
+  if(!confirm('清空所有紀錄？無法復原。')) return;
+  db.records=[]; db.snote={}; persist(); render(); flash('已清空');
 }
 function tab(n){
   ['log','sum','data'].forEach(x=>{
