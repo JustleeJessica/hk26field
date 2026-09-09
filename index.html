@@ -83,7 +83,7 @@
 <header>
   <div class="hbar">
     <div class="mark">JUSTLEE</div>
-    <div style="font-size:12px;color:var(--mute)">HK Fair 2026</div>
+    <div style="font-size:12px;color:var(--mute)">HK Fair 2026 · v4</div>
     <div class="hmeta"><span class="count" id="cnt">0</span> logged</div>
   </div>
   <div id="statusbar">Checking storage…</div>
@@ -135,43 +135,45 @@
 /* ============ schema ============ */
 /* Material order follows the JUSTLEE website. Origins are country-level, a–z. */
 const STONES=[
- {k:'紅寶石',       c:'#E83820', o:['Burma','Madagascar','Mozambique','Tanzania','Thailand','Vietnam'],
-  col:['Pigeon Blood','Vivid Red','Red','Pinkish Red','Purplish Red']},
- {k:'藍寶石',       c:'#00239C', o:['Burma','Kashmir','Madagascar','Sri Lanka','Thailand'],
-  col:['Royal Blue','Cornflower','Vivid Blue','Blue','Greenish Blue','Pinkish']},
- {k:'祖母綠',       c:'#2D5B65', o:['Afghanistan','Brazil','Colombia','Ethiopia','Zambia'],
-  col:['Muzo Green','Vivid Green','Green','Bluish Green','Yellowish Green']},
- {k:'翡翠',         c:'#1E7A5A', o:['Burma'],
-  col:['帝王綠','陽綠','藍水','紫羅蘭','冰種','白底青']},
+ {k:'紅寶石',       c:'#E83820', o:['Afghanistan','Burma','Madagascar','Malawi','Mozambique','Sri Lanka','Tanzania','Thailand','Vietnam'],
+  col:['Pigeon Blood','Vivid Red','Red','Orangy Red','Pinkish Red','Purplish Red','Brownish Red']},
+ {k:'藍寶石',       c:'#00239C', o:['Australia','Burma','Cambodia','Ethiopia','Kashmir','Madagascar','Nigeria','Sri Lanka','Tanzania','Thailand'],
+  col:['Royal Blue','Cornflower Blue','Vivid Blue','Blue','Violetish Blue','Greenish Blue','Teal','Pink','Purple','Yellow','Green','Colour Change']},
+ {k:'祖母綠',       c:'#2D5B65', o:['Afghanistan','Brazil','Colombia','Ethiopia','Madagascar','Pakistan','Russia','Zambia','Zimbabwe'],
+  col:['Muzo Green','Vivid Green','Green','Deep Green','Bluish Green','Yellowish Green','Light Green']},
+ {k:'翡翠',         c:'#1E7A5A', o:['Burma','Guatemala'],
+  col:['帝王綠','陽綠','蘋果綠','藍水','紫羅蘭','冰種','白底青','墨翠','黃翡','紅翡']},
  {k:'彩鑽',         c:'#C9A227', o:['Australia','Botswana','Russia','South Africa'],
-  col:[], type:['Pink','Blue','Green','Yellow','未確認']},
- {k:'Alexandrite',  c:'#7D4698', o:['Brazil','India','Madagascar','Russia','Sri Lanka','Tanzania'],
-  col:['綠變紅','藍綠變紫紅','變色微弱']},
- {k:'Spinel',       c:'#F19DB5', o:['Burma','Madagascar','Sri Lanka','Tanzania','Vietnam'],
-  col:['Vivid Red','Hot Pink','Neon Pink','Cobalt Blue','Grey Blue','Lavender'],
+  col:[], type:['Pink','Blue','Green','Yellow','Orange','Brown','Grey','Violet','未確認']},
+ {k:'Alexandrite',  c:'#7D4698', o:['Brazil','India','Madagascar','Russia','Sri Lanka','Tanzania','Zimbabwe'],
+  col:['綠變紅','藍綠變紫紅','黃綠變棕紅','變色微弱']},
+ {k:'Spinel',       c:'#F19DB5', o:['Afghanistan','Burma','Madagascar','Sri Lanka','Tajikistan','Tanzania','Vietnam'],
+  col:['Vivid Red','Red','Hot Pink','Neon Pink','Pink','Cobalt Blue','Blue','Grey Blue','Lavender','Purple'],
   type:['鈷尖晶','馬亨蓋尖晶','絕地武士','未確認']},
  {k:'Paraiba',      c:'#21B8C5', o:['Brazil','Ethiopia','Mozambique','Nigeria'],
-  col:['Neon Blue','Neon Blue-Green','Blue-Green','Green-Blue','Greenish']},
- {k:'Tourmaline',   c:'#7FA53F', o:['Afghanistan','Brazil','Madagascar','Mozambique','Nigeria'],
-  col:['Pink','Green','Blue','Yellow','雙色']},
- {k:'Padparadscha', c:'#F58A5B', o:['Madagascar','Sri Lanka','Tanzania'],
-  col:['Pinkish Orange','Orangy Pink'], type:['粉橙','橙粉','蓮花色','未確認']},
- {k:'Sphene',       c:'#F5A21B', o:['Brazil','Madagascar','Pakistan','Sri Lanka'],
-  col:['Yellow Green','Golden','Orange']},
- {k:'Tsavorite',    c:'#3F8F4F', o:['Kenya','Madagascar','Tanzania'],
-  col:['Vivid Green','Green','Bluish Green']},
- {k:'翠榴石',       c:'#6B8E23', o:['Italy','Madagascar','Namibia','Russia'],
-  col:['Vivid Green','Green','Yellowish Green']},
+  col:['Neon Blue','Neon Blue-Green','Blue-Green','Green-Blue','Greenish Blue','Violetish Blue']},
+ {k:'Tourmaline',   c:'#7FA53F', o:['Afghanistan','Brazil','Madagascar','Mozambique','Namibia','Nigeria','USA'],
+  col:['Pink','Red','Green','Blue','Yellow','Purple','雙色','西瓜色']},
+ {k:'Padparadscha', c:'#F58A5B', o:['Madagascar','Sri Lanka','Tanzania','Vietnam'],
+  col:['Pinkish Orange','Orangy Pink','Orange Pink'],
+  type:['CST 1','CST 2a','CST 2b','CST 3a','CST 3b','CST 4','未測試','其他']},
+ {k:'Sphene',       c:'#F5A21B', o:['Brazil','Madagascar','Pakistan','Russia','Sri Lanka','Tanzania'],
+  col:['Yellow Green','Green','Golden','Orange','Brownish Orange']},
+ {k:'Tsavorite 沙弗萊石', c:'#3F8F4F', o:['Kenya','Madagascar','Tanzania'],
+  col:['Vivid Green','Green','Bluish Green','Yellowish Green']},
+ {k:'Demantoid 翠榴石', c:'#6B8E23', o:['Italy','Iran','Madagascar','Namibia','Russia'],
+  col:['Vivid Green','Green','Yellowish Green','Brownish Green']},
  {k:'Other',        c:'#000000', o:[], col:[]}
 ];
+const OTHER='其他';
 const UNSTATED='未說明';
 const WEIGHT=['1ct 以下','1–5ct','5–9.99ct','10ct 以上'];
 const FORM=['Loose','Ring','Pendant','Ring / pendant','Earrings','Necklace','Bracelet','Pair','Suite'];
 const TREAT=['No Heat','Untreated','Heated','No Oil (None)','Insignificant','Minor','Moderate','未說明'];
 const CLARITY=['IF','VVS1','VVS2','VS1','VS2','SI1','SI2'];
-const APPEAR=['顏色濃','顏色淡','淨度乾淨','有內含物','切工佳','切工一般','火彩強',
-              '螢光強','變色明顯','貓眼效應','星光效應','馬尾狀內含物'];
-const CERT=['GRS','Gübelin','SSEF','GIA','AIGS','Lotus','無證書','未說明'];
+const APPEAR=['顏色濃','顏色淡','火光強','透亮','變色效應','強變色',
+              '內含包裹體','馬尾狀內含物','貓眼效應','星光效應','奶體'];
+const CERT=['GRS','Gübelin','SSEF','GIA','AIGS','Lotus','Bell','Appendix','其他','無證書'];
 const PBASIS=['Asking','Negotiable','Firm','Memo'];
 const TREND=['Up','Flat','Down','No answer'];
 const BUYER=['Middle East','China','SE Asia','Europe / US','TW / HK','Japan / Korea','India','No answer'];
@@ -179,7 +181,7 @@ const BUYER=['Middle East','China','SE Asia','Europe / US','TW / HK','Japan / Ko
 const FIELDS={
  booth:  {label:'Booth & vendor', hint:'optional — stays for the next entry'},
  stone:  {label:'Material'},
- type:   {label:'Type', hint:'per certificate', cond:s=>s&&s.type},
+ type:   {label:'Type', hint:'依證書記載', cond:s=>s&&s.type},
  color:  {label:'Colour', cond:s=>s&&s.col&&s.col.length},
  clarity:{label:'Clarity', hint:'diamond scale', cond:s=>s&&s.k==='彩鑽'},
  origin: {label:'Origin'},
@@ -190,20 +192,21 @@ const FIELDS={
  appear: {label:'Appearance', hint:'multi-select'},
  price:  {label:'Price'},
  cert:   {label:'Certificate', hint:'multi-select'},
- trend:  {label:'6-month trend', hint:'as stated by vendor'},
+ trend:  {label:'6-month trend — supplementary', hint:'as stated by vendor', aux:true},
  buyer:  {label:'Buyer — supplementary', aux:true},
  bnote:  {label:'Booth notes — supplementary', aux:true},
+ flags:  {label:'影片與名片'},
  note:   {label:'Note'}
 };
-const DEFAULT_ORDER=['booth','stone','type','color','clarity','origin','weight','ct','form',
-                     'treat','appear','price','cert','trend','buyer','bnote','note'];
+const DEFAULT_ORDER=['booth','stone','type','form','weight','ct','origin','color','clarity',
+                     'cert','treat','price','appear','trend','buyer','bnote','flags','note'];
 
 /* Fixed export schema — never reorders. */
-const HEAD=['Time','Booth','Vendor','Material','Type','Colour','Colour note','Clarity',
+const HEAD=['Time','Booth','Vendor','Material','Type','Type note','Colour','Colour note','Clarity',
             'Clarity note','Origin','Origin note','Weight range','Carat','Form','Treatment',
             'Appearance','Appearance note','USD/ct','Total USD','Price basis','Price note',
-            'Certificate','Cert note','6-mo trend','Buyer country','Buyer note','Booth note',
-            'Video','Card','Note'];
+            'Certificate','Cert other','Cert note','Appendix','6-mo trend','Trend note',
+            'Buyer country','Buyer note','Booth note','Video','Their card','Our card','Note'];
 
 const KEY='justlee-hk-2026', BAK=KEY+'-bak', DRAFT=KEY+'-draft';
 let db={records:[],snote:{},order:DEFAULT_ORDER.slice()};
@@ -212,6 +215,7 @@ let db={records:[],snote:{},order:DEFAULT_ORDER.slice()};
 function blank(){
   return {stone:null,type:null,color:null,colorNote:'',clarity:null,origin:null,originNote:'',
           clarityNote:'',weight:null,ct:'',form:null,treat:null,appear:[],appearNote:'',
+          appendix:'',certOther:'',typeNote:'',trendNote:'',gave:false,
           price:'',total:'',pbasis:null,pnote:'',cert:[],certNote:'',
           trend:null,buyer:[],buyerNote:'',bnote:'',booth:'',vendor:'',
           video:false,card:false,note:''};
@@ -345,9 +349,13 @@ function buildRow(id){
     });
     row.appendChild(box);
   }
-  else if(id==='type') row.appendChild(chips(s.type,'type',false));
+  else if(id==='type'){
+    row.appendChild(chips(s.type,'type',false));
+    if(f.type==='其他'||f.type==='未確認'||f.type==='未測試')
+      row.appendChild(txt('typeNote','Type 補充','mt'));
+  }
   else if(id==='color'){
-    const opts=(s?s.col:[]).concat([UNSTATED]);
+    const opts=(s?s.col:[]).concat([OTHER,UNSTATED]);
     if(!s) row.appendChild(el('div','note','Pick a material first, or use the note line.'));
     if(opts.length>1) row.appendChild(chips(opts,'color',false));
     row.appendChild(txt('colorNote','Colour note — vendor wording, comparison, tone','mt'));
@@ -357,7 +365,7 @@ function buildRow(id){
     row.appendChild(txt('clarityNote','Clarity note','mt'));
   }
   else if(id==='origin'){
-    const opts=(s?s.o:[]).concat([UNSTATED]);
+    const opts=(s?s.o:[]).concat([OTHER,UNSTATED]);
     if(!s) row.appendChild(el('div','note','Pick a material first, or use the note line.'));
     row.appendChild(chips(opts,'origin',false));
     row.appendChild(txt('originNote','Origin note — anything the vendor said','mt'));
@@ -380,9 +388,25 @@ function buildRow(id){
   }
   else if(id==='cert'){
     row.appendChild(chips(CERT,'cert',true));
-    row.appendChild(txt('certNote','Cert note — report no., date, wording','mt'));
+    if(f.cert.includes('其他')) row.appendChild(txt('certOther','證書名稱','mt'));
+    row.appendChild(txt('certNote','日期、其他細節補充','mt'));
+    if(f.cert.includes('Appendix'))
+      row.appendChild(txt('appendix','Appendix 上寫了什麼','mt'));
   }
-  else if(id==='trend') row.appendChild(chips(TREND,'trend',false));
+  else if(id==='flags'){
+    const box=el('div','chips');
+    [['video','拍了影片'],['card','拿了對方名片'],['gave','給了 JUSTLEE 名片']].forEach(([k,lab])=>{
+      const b=el('button','chip'+(f[k]?' sel':''),lab);
+      b.onclick=()=>{f[k]=!f[k];render();saveDraft();};
+      box.appendChild(b);
+    });
+    row.appendChild(box);
+    row.appendChild(el('div','note','到一攤先拍名片或攤位牌，再拍石頭。'));
+  }
+  else if(id==='trend'){
+    row.appendChild(chips(TREND,'trend',false));
+    row.appendChild(txt('trendNote','例：哪個等級在漲？跟去年同期比？','mt'));
+  }
   else if(id==='buyer'){
     row.appendChild(chips(BUYER,'buyer',true));
     row.appendChild(txt('buyerNote','例：這兩天誰在問？哪個等級走得動？','mt'));
@@ -434,9 +458,11 @@ function save(){
     weight:f.weight||'', ct:f.ct.trim(), form:f.form||'', treat:f.treat||'',
     appear:f.appear.join(' / '), appearNote:f.appearNote.trim(),
     price:f.price.trim(), total:f.total.trim(), pbasis:f.pbasis||'', pnote:f.pnote.trim(),
-    cert:f.cert.join(' / '), certNote:f.certNote.trim(), trend:f.trend||'',
+    typeNote:f.typeNote.trim(), cert:f.cert.join(' / '), certOther:f.certOther.trim(),
+    certNote:f.certNote.trim(), appendix:f.appendix.trim(),
+    trend:f.trend||'', trendNote:f.trendNote.trim(),
     buyer:f.buyer.join(' / '), buyerNote:f.buyerNote.trim(), bnote:f.bnote.trim(),
-    video:f.video?'Y':'', card:f.card?'Y':'', note:f.note.trim()
+    video:f.video?'Y':'', card:f.card?'Y':'', gave:f.gave?'Y':'', note:f.note.trim()
   });
   persist();
   /* full reset — only booth, vendor and material carry over */
@@ -493,7 +519,7 @@ function drawRecords(){
       '<b><span class="swatch" style="background:'+(s?s.c:'#999')+'"></span>'+(r.stone||'—')+
       (r.type?' · '+r.type:'')+(r.origin?' · '+r.origin:'')+'</b>'+
       '<div class="sub">'+[r.color,r.colorNote,r.clarity,r.ct?r.ct+'ct':r.weight,r.form,
-        r.treat,r.cert,r.certNote,r.pbasis,r.pnote,r.appear,r.appearNote,
+        r.treat,r.cert,r.certNote,r.appendix,r.pbasis,r.pnote,r.appear,r.appearNote,
         r.trend?'trend '+r.trend:'',r.total&&r.price?'total $'+r.total:''].filter(Boolean).join(' · ')+'</div>'+
       '<div class="sub">'+[r.t.slice(5,16).replace('T',' '),r.booth,r.vendor,r.originNote,
         r.buyer,r.buyerNote,r.bnote,r.note].filter(Boolean).join(' · ')+'</div>';
@@ -504,9 +530,9 @@ function csv(){
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const L=[HEAD.map(q).join(',')];
   db.records.forEach(r=>L.push([r.t.slice(0,16).replace('T',' '),r.booth,r.vendor,r.stone,
-    r.type,r.color,r.colorNote,r.clarity,r.clarityNote,r.origin,r.originNote,r.weight,r.ct,r.form,r.treat,
-    r.appear,r.appearNote,r.price,r.total,r.pbasis,r.pnote,r.cert,r.certNote,r.trend,
-    r.buyer,r.buyerNote,r.bnote,r.video,r.card,r.note].map(q).join(',')));
+    r.type,r.typeNote,r.color,r.colorNote,r.clarity,r.clarityNote,r.origin,r.originNote,r.weight,r.ct,r.form,r.treat,
+    r.appear,r.appearNote,r.price,r.total,r.pbasis,r.pnote,r.cert,r.certOther,r.certNote,r.appendix,r.trend,r.trendNote,
+    r.buyer,r.buyerNote,r.bnote,r.video,r.card,r.gave,r.note].map(q).join(',')));
   L.push('');
   L.push([q('Material'),q('Entries'),q('Booths'),q('Min USD/ct'),q('Max USD/ct'),q('Observation')].join(','));
   STONES.forEach(s=>{

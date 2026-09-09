@@ -1,15 +1,15 @@
-/* Offline cache for the JUSTLEE HK fair field log.
-   Cache-first. Only index.html is required, so a missing or renamed
-   icon can never break offline mode. */
-const CACHE = 'jl-fieldlog-v2';
-const REQUIRED = ['./', './index.html'];
-const OPTIONAL = ['./icon.png'];
+/* JUSTLEE HK fair field log — offline cache.
+
+   Network-first for the page itself: whenever there is signal the newest
+   version wins, so an upload always reaches the phone. Cache-first for
+   everything else. With no signal at all, the cached page is served. */
+const CACHE = 'jl-fieldlog-v3';
+const PAGE = './index.html';
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
     const c = await caches.open(CACHE);
-    await c.addAll(REQUIRED);
-    await Promise.all(OPTIONAL.map(u => c.add(u).catch(() => {})));
+    await c.addAll(['./', PAGE]).catch(() => c.add(PAGE));
     await self.skipWaiting();
   })());
 });
@@ -23,17 +23,36 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
+  const req = e.request;
+  if (req.method !== 'GET') return;
+
+  const isPage = req.mode === 'navigate' ||
+                 (req.headers.get('accept') || '').includes('text/html');
+
+  if (isPage) {
+    e.respondWith((async () => {
+      try {
+        const fresh = await fetch(req, { cache: 'no-store' });
+        const c = await caches.open(CACHE);
+        c.put(PAGE, fresh.clone()).catch(() => {});
+        return fresh;
+      } catch (err) {
+        return (await caches.match(PAGE)) || (await caches.match('./')) || Response.error();
+      }
+    })());
+    return;
+  }
+
   e.respondWith((async () => {
-    const hit = await caches.match(e.request);
+    const hit = await caches.match(req);
     if (hit) return hit;
     try {
-      const res = await fetch(e.request);
+      const res = await fetch(req);
       const c = await caches.open(CACHE);
-      c.put(e.request, res.clone()).catch(() => {});
+      c.put(req, res.clone()).catch(() => {});
       return res;
     } catch (err) {
-      return (await caches.match('./index.html')) || Response.error();
+      return Response.error();
     }
   })());
 });
